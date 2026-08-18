@@ -206,23 +206,23 @@ async function loadGaleriAdmin() {
     try {
         const res = await fetch('api/get_galeri.php');
         const data = await res.json();
-        const tbody = document.getElementById('galeri-admin-body');
+        const grid = document.getElementById('galeri-admin-grid');
         
         if (data.success && data.data.length > 0) {
-            tbody.innerHTML = data.data.map((g, index) => `
-                <tr>
-                    <td style="text-align: center;">${index + 1}</td>
-                    <td style="text-align: center;">
-                        <img src="${g.image_path}" style="max-height: 80px; max-width: 150px; border-radius: 4px; object-fit: cover;">
-                    </td>
-                    <td>${g.tanggal}</td>
-                    <td style="text-align: center;">
-                        <button class="btn-action btn-reject" onclick="deleteGaleri(${g.id})" title="Hapus"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>
+            grid.innerHTML = data.data.map((g, index) => `
+                <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                    <div style="height: 120px; overflow: hidden; background: #f8fafc; position: relative;">
+                        <img src="${g.image_path}" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div style="position: absolute; top: 0.5rem; left: 0.5rem; background: rgba(0,0,0,0.6); color: white; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">${index + 1}</div>
+                    </div>
+                    <div style="padding: 0.8rem; display: flex; justify-content: space-between; align-items: center; flex-grow: 1;">
+                        <div style="font-size: 0.75rem; color: #64748b;">${g.tanggal.split(' ')[0]}</div>
+                        <button class="btn-action btn-reject" onclick="deleteGaleri(${g.id})" title="Hapus" style="margin: 0; padding: 0.4rem 0.6rem;"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
             `).join('');
         } else {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #64748b;">Belum ada foto galeri.</td></tr>';
+            grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: #64748b; padding: 2rem;">Belum ada foto galeri.</div>';
         }
     } catch (e) {
         console.error("Gagal memuat galeri:", e);

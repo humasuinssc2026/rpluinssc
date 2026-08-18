@@ -214,20 +214,9 @@
                 <!-- Daftar Galeri -->
                 <div class="dashboard-card">
                     <h3 style="margin-top:0; color: #1e293b;"><i class="fas fa-images"></i> Daftar Foto Galeri</h3>
-                    <div class="table-responsive">
-                        <table class="admin-table">
-                            <thead>
-                                <tr>
-                                    <th width="10%">No</th>
-                                    <th width="30%">Preview</th>
-                                    <th width="40%">Tanggal Diunggah</th>
-                                    <th width="20%">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="galeri-admin-body">
-                                <tr><td colspan="4" style="text-align: center;">Memuat data...</td></tr>
-                            </tbody>
-                        </table>
+                    <div id="galeri-admin-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; margin-top: 1rem;">
+                        <div style="grid-column: 1 / -1; text-align: center; color: #64748b;">Memuat data...</div>
+                    </div>
                     </div>
                 </div>
             </div>
