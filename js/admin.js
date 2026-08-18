@@ -1090,22 +1090,6 @@ async function loadLogs() {
 }
 
 // ======================= HASIL KONVERSI SKS =======================
-
-
-
-
-" class="filter-input" style="width:100%; box-sizing:border-box;" required></td>
-        <td><input type="text" name="mk_nama[]" value="${nama}" class="filter-input" style="width:100%; box-sizing:border-box;" required></td>
-        <td><input type="number" name="mk_sks[]" value="${sks}" class="filter-input" style="width:100%; box-sizing:border-box;" required min="1" max="6"></td>
-        <td><input type="text" name="mk_nilai[]" value="${nilai}" class="filter-input" style="width:100%; box-sizing:border-box;" required maxlength="2" placeholder="A/B/C"></td>
-        <td><button type="button" class="btn-action btn-reject" style="margin:0; padding:0.3rem 0.6rem;" onclick="this.closest('tr').remove()"><i class="fas fa-trash"></i></button></td>
-    `;
-    tbody.appendChild(tr);
-}
-
-
-
-
 // ==============================
 // EDIT UNDUHAN MODAL
 // ==============================
