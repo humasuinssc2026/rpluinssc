@@ -684,91 +684,6 @@ async function deleteAdmin(id) {
     }
 }
 
-// ======================= PEMBAYARAN VALIDATION FUNCTIONS =======================
-async function loadPembayaran() {
-    const loading = document.getElementById('loading-pembayaran');
-    const tableContainer = document.getElementById('table-pembayaran-container');
-    const tbody = document.getElementById('pembayaran-body');
-    
-    loading.style.display = 'block';
-    tableContainer.style.display = 'none';
-    
-    const userId = localStorage.getItem('user_id');
-
-    try {
-        const res = await fetch('api/get_peserta.php', {
-            headers: { 'Authorization': userId }
-        });
-        const data = await res.json();
-        
-        if (data.success) {
-            globalPeserta = data.data; // Update global
-            const filtered = data.data.filter(p => p.status_pembayaran === 'Menunggu Verifikasi Pembayaran');
-            
-            tbody.innerHTML = '';
-            if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Tidak ada peserta yang menunggu verifikasi pembayaran saat ini.</td></tr>';
-            } else {
-                tbody.innerHTML = filtered.map((p, i) => `
-                    <tr>
-                        <td style="text-align:center;">${i + 1}</td>
-                        <td style="font-weight:600;">${p.nama}</td>
-                        <td>${p.nik}</td>
-                        <td>${p.tanggal_daftar}</td>
-                        <td style="text-align:center;">
-                            ${p.bukti_pembayaran 
-                                ? `<button class="btn-view" onclick="viewBuktiPembayaran('${p.bukti_pembayaran}', '${p.nama}', ${p.id})"><i class="fas fa-search"></i> Lihat Bukti</button>` 
-                                : '<span style="color:#ef4444;">Belum Ada</span>'}
-                        </td>
-                        <td>
-                            <button class="btn-action btn-verify" onclick="updatePayment(${p.id}, 'Lunas')" title="Setujui"><i class="fas fa-check"></i></button>
-                            <button class="btn-action btn-reject" onclick="updatePayment(${p.id}, 'Belum Bayar')" title="Tolak" style="margin:0;"><i class="fas fa-times"></i></button>
-                        </td>
-                    </tr>
-                `).join('');
-            }
-            loading.style.display = 'none';
-            tableContainer.style.display = 'block';
-        }
-    } catch (error) {
-        loading.innerHTML = 'Terjadi kesalahan saat memuat data.';
-    }
-}
-
-function viewBuktiPembayaran(fileName, namaUser, userId) {
-    document.getElementById('bukti-nama').textContent = namaUser;
-    document.getElementById('bukti-user-id').value = userId;
-    
-    const url = 'uploads/pembayaran/' + fileName;
-    const isPdf = fileName.toLowerCase().endsWith('.pdf');
-    const container = document.getElementById('bukti-viewer-container');
-    
-    if (isPdf) {
-        container.innerHTML = `<iframe src="${url}" width="100%" height="100%" style="border: none;"></iframe>`;
-    } else {
-        container.innerHTML = `<img src="${url}" style="max-width: 100%; max-height: 500px; object-fit: contain;">`;
-    }
-    
-    document.getElementById('bukti-modal').style.display = 'flex';
-}
-
-function closeBuktiModal() {
-    document.getElementById('bukti-modal').style.display = 'none';
-}
-
-function processPembayaran(status) {
-    const userId = document.getElementById('bukti-user-id').value;
-    updatePayment(userId, status);
-    closeBuktiModal();
-    // loadPembayaran will be called if they are on the pembayaran section, because updatePayment calls loadPeserta.
-    // Let's make sure it updates current section.
-    setTimeout(() => {
-        if (document.getElementById('section-pembayaran').style.display === 'block') {
-            loadPembayaran();
-        }
-    }, 500);
-}
-
 // ======================= AUDIT LOGS FUNCTIONS =======================
 async function loadLogs() {
     try {
@@ -796,126 +711,6 @@ async function loadLogs() {
         console.error("Gagal load logs", e);
     }
 }
-
-// ======================= HASIL RPL FUNCTIONS =======================
-function openHasilModal(pesertaId, nama, prodi, tgl, lokasi) {
-    document.getElementById('hasil-peserta-id').value = pesertaId;
-    document.getElementById('hasil-nama').textContent = nama;
-    document.getElementById('hasil-prodi').textContent = prodi || '-';
-    document.getElementById('input-jadwal-tgl').value = tgl || '';
-    document.getElementById('input-jadwal-lokasi').value = lokasi || '';
-    document.getElementById('hasil-modal').style.display = 'flex';
-    loadHasilRPL(pesertaId);
-}
-
-function closeHasilModal() {
-    document.getElementById('hasil-modal').style.display = 'none';
-}
-
-async function loadHasilRPL(pesertaId) {
-    const tbody = document.getElementById('hasil-rpl-body');
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Memuat data...</td></tr>';
-    try {
-        const res = await fetch(`api/get_hasil.php?peserta_id=${pesertaId}`, {
-            headers: { 'Authorization': localStorage.getItem('user_id') }
-        });
-        const data = await res.json();
-        if (data.success) {
-            if (data.data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Belum ada nilai yang diinput.</td></tr>';
-                return;
-            }
-            tbody.innerHTML = data.data.map(h => `
-                <tr>
-                    <td>${h.kode_mk}</td>
-                    <td>${h.nama_mk}</td>
-                    <td style="text-align:center;">${h.sks}</td>
-                    <td style="text-align:center; font-weight:bold;">${h.nilai}</td>
-                    <td style="text-align:center;">
-                        <button class="btn-action btn-reject" onclick="deleteHasilRPL(${h.id}, ${pesertaId})" title="Hapus" style="margin:0;"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-    } catch (e) {
-        console.error("Gagal load hasil RPL", e);
-    }
-}
-
-async function addHasilRPL() {
-    const peserta_id = document.getElementById('hasil-peserta-id').value;
-    const kode_mk = document.getElementById('input-kode-mk').value;
-    const nama_mk = document.getElementById('input-nama-mk').value;
-    const sks = document.getElementById('input-sks').value;
-    const nilai = document.getElementById('input-nilai').value;
-
-    if (!kode_mk || !nama_mk || !sks || !nilai) {
-        alert('Harap isi semua field mata kuliah!');
-        return;
-    }
-
-    try {
-        const res = await fetch('api/save_hasil.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('user_id') },
-            body: JSON.stringify({ peserta_id, kode_mk, nama_mk, sks, nilai })
-        });
-        const data = await res.json();
-        if (data.success) {
-            document.getElementById('input-kode-mk').value = '';
-            document.getElementById('input-nama-mk').value = '';
-            document.getElementById('input-sks').value = '';
-            document.getElementById('input-nilai').value = '';
-            loadHasilRPL(peserta_id);
-        } else {
-            alert(data.message);
-        }
-    } catch (e) {
-        alert("Terjadi kesalahan jaringan");
-    }
-}
-
-async function deleteHasilRPL(id, pesertaId) {
-    if (!confirm('Hapus nilai ini?')) return;
-    try {
-        const res = await fetch('api/delete_hasil.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('user_id') },
-            body: JSON.stringify({ id })
-        });
-        const data = await res.json();
-        if (data.success) {
-            loadHasilRPL(pesertaId);
-        }
-    } catch (e) {
-        alert("Terjadi kesalahan jaringan");
-    }
-}
-
-async function saveJadwalAsesmen() {
-    const peserta_id = document.getElementById('hasil-peserta-id').value;
-    const tgl = document.getElementById('input-jadwal-tgl').value;
-    const lokasi = document.getElementById('input-jadwal-lokasi').value;
-
-    try {
-        const res = await fetch('api/save_jadwal.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('user_id') },
-            body: JSON.stringify({ peserta_id, tgl, lokasi })
-        });
-        const data = await res.json();
-        alert(data.message);
-        if (data.success) {
-            loadPeserta(); // Update the table data behind
-        }
-    } catch (e) {
-        alert("Terjadi kesalahan jaringan");
-    }
-}
-
-// ======================= CHART.JS =======================
-let chartVerifikasiInstance = null;
-let chartPembayaranInstance = null;
 
 async function initAdminCharts() {
     try {
@@ -1295,29 +1090,11 @@ async function loadLogs() {
 }
 
 // ======================= HASIL KONVERSI SKS =======================
-function openHasilModal(id, nama, prodi, tgl, lokasi) {
-    document.getElementById('hasil-peserta-id').value = id;
-    document.getElementById('hasil-nama').textContent = nama;
-    document.getElementById('hasil-prodi').textContent = prodi || '-';
-    
-    // Reset table body
-    document.getElementById('hasil-mk-body').innerHTML = '';
-    
-    // Load existing data
-    loadHasilRpl(id);
-    
-    document.getElementById('hasil-modal').style.display = 'flex';
-}
 
-function closeHasilModal() {
-    document.getElementById('hasil-modal').style.display = 'none';
-}
 
-function addMkRow(kode = '', nama = '', sks = '', nilai = '') {
-    const tbody = document.getElementById('hasil-mk-body');
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-        <td><input type="text" name="mk_kode[]" value="${kode}" class="filter-input" style="width:100%; box-sizing:border-box;" required></td>
+
+
+" class="filter-input" style="width:100%; box-sizing:border-box;" required></td>
         <td><input type="text" name="mk_nama[]" value="${nama}" class="filter-input" style="width:100%; box-sizing:border-box;" required></td>
         <td><input type="number" name="mk_sks[]" value="${sks}" class="filter-input" style="width:100%; box-sizing:border-box;" required min="1" max="6"></td>
         <td><input type="text" name="mk_nilai[]" value="${nilai}" class="filter-input" style="width:100%; box-sizing:border-box;" required maxlength="2" placeholder="A/B/C"></td>
@@ -1326,66 +1103,8 @@ function addMkRow(kode = '', nama = '', sks = '', nilai = '') {
     tbody.appendChild(tr);
 }
 
-async function loadHasilRpl(pesertaId) {
-    try {
-        const res = await fetch(`api/get_hasil_rpl.php?peserta_id=${pesertaId}`);
-        const data = await res.json();
-        
-        if (data.success && data.data.length > 0) {
-            data.data.forEach(mk => {
-                addMkRow(mk.kode_mk, mk.nama_mk, mk.sks, mk.nilai);
-            });
-        } else {
-            // Default 1 empty row
-            addMkRow();
-        }
-    } catch (e) {
-        console.error('Gagal load hasil RPL:', e);
-        addMkRow();
-    }
-}
 
-async function saveHasilRpl(e) {
-    e.preventDefault();
-    
-    const pesertaId = document.getElementById('hasil-peserta-id').value;
-    const form = document.getElementById('form-hasil');
-    
-    const kodes = form.querySelectorAll('input[name="mk_kode[]"]');
-    const namas = form.querySelectorAll('input[name="mk_nama[]"]');
-    const skss = form.querySelectorAll('input[name="mk_sks[]"]');
-    const nilais = form.querySelectorAll('input[name="mk_nilai[]"]');
-    
-    let mkList = [];
-    for(let i = 0; i < kodes.length; i++) {
-        mkList.push({
-            kode: kodes[i].value,
-            nama: namas[i].value,
-            sks: skss[i].value,
-            nilai: nilais[i].value
-        });
-    }
-    
-    const userId = localStorage.getItem('user_id');
-    
-    try {
-        const res = await fetch('api/save_hasil_rpl.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': userId },
-            body: JSON.stringify({ peserta_id: pesertaId, mk_list: mkList })
-        });
-        const data = await res.json();
-        alert(data.message);
-    } catch (err) {
-        alert("Terjadi kesalahan koneksi saat menyimpan nilai.");
-    }
-}
 
-function cetakSKKonversi() {
-    const id = document.getElementById('hasil-peserta-id').value;
-    if (!id) return;
-    window.open(`cetak_sk.php?id=${id}`, '_blank');
-}
 
 // ==============================
 // EDIT UNDUHAN MODAL
