@@ -531,7 +531,7 @@ async function deletePedomanFile(fileId, prodiId) {
 // ======================= SETTINGS FUNCTIONS =======================
 async function loadSettings() {
     try {
-        const res = await fetch('api/settings.php');
+        const res = await fetch('api/settings.php?t=' + new Date().getTime());
         const data = await res.json();
         if (data.success && data.data) {
             if(document.getElementById('set-mulai')) document.getElementById('set-mulai').value = data.data.jadwal_mulai;

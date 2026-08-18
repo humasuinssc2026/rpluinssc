@@ -943,7 +943,7 @@
         
         async function loadWebSettingsPublic() {
             try {
-                const res = await fetch("api/settings.php");
+                const res = await fetch("api/settings.php?t=" + new Date().getTime());
                 const data = await res.json();
                 if (data.success && data.data) {
                     if (data.data.teks_berjalan) document.getElementById("public-teks-berjalan").innerText = data.data.teks_berjalan;
@@ -1008,7 +1008,7 @@
         </div>
     </div>
 
-    <script src="js/script.js"></script>
+    <script src="js/script.js?v=2"></script>
     <script src="js/kalkulator.js"></script>
 </body>
 </html>
