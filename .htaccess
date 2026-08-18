@@ -1,0 +1,21 @@
+# Nonaktifkan penjelajahan direktori (Directory Listing) agar orang tidak bisa melihat isi folder
+Options -Indexes
+
+# Blokir akses langsung ke file database SQLite
+<FilesMatch "\.(sqlite|db|sqlite3)$">
+    # Aturan untuk server Apache versi 2.4 ke atas
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    # Aturan untuk server Apache versi 2.2 ke bawah
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Blokir akses ke file konfigurasi dan file tersembunyi
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
