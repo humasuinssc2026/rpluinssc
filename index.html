@@ -953,6 +953,10 @@
                         const cleanWa = data.data.kontak_wa.replace(/\D/g, "");
                         document.getElementById("public-wa-btn").href = `https://wa.me/${cleanWa}?text=Halo%20Admin%20RPL%20UINSSC,%20saya%20butuh%20bantuan.`;
                     }
+                    if (data.data.rektor_nama && document.getElementById("rektor-nama")) document.getElementById("rektor-nama").innerText = data.data.rektor_nama;
+                    if (data.data.rektor_jabatan && document.getElementById("rektor-jabatan")) document.getElementById("rektor-jabatan").innerText = data.data.rektor_jabatan;
+                    if (data.data.rektor_teks && document.getElementById("rektor-teks")) document.getElementById("rektor-teks").innerText = data.data.rektor_teks;
+                    if (data.data.rektor_foto && document.getElementById("rektor-foto")) document.getElementById("rektor-foto").src = data.data.rektor_foto;
                 }
             } catch (e) {
                 console.error("Gagal memuat pengaturan web:", e);
