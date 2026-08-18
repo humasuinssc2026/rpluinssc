@@ -1,0 +1,18 @@
+Array
+(
+    [nama_dokumen] => KMA No. 1808 Tahun 2025 tentang Pedoman Penyelenggaraan RPL pada PTK
+)
+
+Array
+(
+    [file_dokumen] => Array
+        (
+            [name] => KMA No. 1808 Tahun 2025 tentang Pedoman Penyelenggaraan RPL pada PTK.pdf
+            [full_path] => KMA No. 1808 Tahun 2025 tentang Pedoman Penyelenggaraan RPL pada PTK.pdf
+            [type] => application/pdf
+            [tmp_name] => C:\Users\info\AppData\Local\Temp\php41CC.tmp
+            [error] => 0
+            [size] => 13024783
+        )
+
+)

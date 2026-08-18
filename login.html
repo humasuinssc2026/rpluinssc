@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrasi - RPL UINSSC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { 
+            background: url('header.png') center/cover;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #0f172a;
+        }
+        .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 1; }
+        
+        .modal-card {
+            background: #ffffff;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 700px;
+            z-index: 2;
+            position: relative;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            margin: 2rem;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .modal-title h2 { font-size: 1.25rem; font-weight: 700; color: #1e293b; margin-bottom: 0.2rem; }
+        .modal-title p { font-size: 0.85rem; color: #64748b; }
+        
+        .btn-close {
+            background: none; border: none; font-size: 1.2rem; color: #64748b; cursor: pointer; padding: 0.5rem; transition: 0.2s;
+        }
+        .btn-close:hover { color: #0f172a; }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group.full { grid-column: span 2; }
+
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            color: #334155;
+            transition: all 0.2s;
+        }
+        .form-control::placeholder { color: #94a3b8; }
+        .form-control:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+
+        .password-reqs {
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+            background: #fafafa;
+        }
+        .password-reqs h4 {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+        .reqs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.8rem;
+        }
+        .req-item {
+            font-size: 0.85rem;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .req-item i { font-size: 0.5rem; color: #94a3b8; }
+
+        .captcha-mock {
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 350px;
+            margin: 0 auto 2rem;
+            background: #fafafa;
+        }
+        .captcha-success { display: flex; align-items: center; gap: 0.8rem; font-size: 1.1rem; color: #1e293b; }
+        .captcha-success i { color: #22c55e; font-size: 1.8rem; }
+        .captcha-logo { text-align: right; font-size: 0.65rem; color: #64748b; font-weight: 600;}
+        .captcha-logo i { color: #f59e0b; font-size: 1.2rem; }
+        .captcha-logo a { color: #64748b; text-decoration: underline; }
+
+        .btn-submit {
+            width: 100%;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        /* Override to match green button in screenshot */
+        .btn-submit { background-color: #348b61; }
+        .btn-submit:hover { background-color: #276b4a; }
+
+        .alert { padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem; display: none; font-size: 0.9rem; }
+        .alert-error { background: #fee2e2; color: #991b1b; border: 1px solid #f87171; }
+        .alert-success { background: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+
+        /* Small screen adjustments */
+        @media (max-width: 640px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .form-group.full { grid-column: span 1; }
+            .reqs-grid { grid-template-columns: 1fr; }
+        }
+        
+        .login-link { text-align: center; margin-top: 1rem; font-size: 0.9rem; color: #64748b;}
+        .login-link a { color: #348b61; font-weight: 600; text-decoration: none;}
+    </style>
+</head>
+<body>
+
+    <div class="overlay"></div>
+
+    <div class="modal-card">
+        <div class="modal-header">
+            <div class="modal-title">
+                <h2>Registrasi Akun SPMB</h2>
+                <p>Buat akun untuk memulai pendaftaran jalur RPL</p>
+            </div>
+            <a href="index.html" class="btn-close"><i class="fas fa-times"></i></a>
+        </div>
+
+        <div class="modal-body">
+            <div id="alert-box" class="alert"></div>
+
+            <form id="register-form">
+                <div class="form-grid">
+                    <div class="form-group full">
+                        <label>Nama Lengkap (Sesuai KTP)</label>
+                        <input type="text" id="reg-nama" class="form-control" placeholder="NAMA LENGKAP" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>NIK (KTP)</label>
+                        <input type="text" id="reg-nik" class="form-control" placeholder="16 digit angka KTP" maxlength="16" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Nomor HP / WhatsApp</label>
+                        <input type="text" id="reg-hp" class="form-control" placeholder="081234567890" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Alamat Email Aktif</label>
+                        <input type="email" id="reg-email" class="form-control" placeholder="contoh@gmail.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Tanggal Lahir</label>
+                        <input type="date" id="reg-tanggal" class="form-control" required>
+                    </div>
+
+                    <div class="form-group full">
+                        <label>Pilihan Program Studi</label>
+                        <select id="reg-prodi" class="form-control" required style="background: white;">
+                            <option value="">Memuat Program Studi...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Buat Password</label>
+                        <input type="password" id="reg-password" class="form-control" placeholder="••••••••" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Konfirmasi Password</label>
+                        <input type="password" id="reg-confirm" class="form-control" placeholder="••••••••" required>
+                    </div>
+                </div>
+
+                <div class="password-reqs">
+                    <h4>Syarat Keamanan Password:</h4>
+                    <div class="reqs-grid">
+                        <div class="req-item"><i class="fas fa-circle"></i> Min. 8 karakter</div>
+                        <div class="req-item"><i class="fas fa-circle"></i> Huruf besar (A-Z)</div>
+                        <div class="req-item"><i class="fas fa-circle"></i> Huruf kecil (a-z)</div>
+                        <div class="req-item"><i class="fas fa-circle"></i> Angka (0-9)</div>
+                        <div class="req-item"><i class="fas fa-circle"></i> Simbol (@$!%*?&#)</div>
+                    </div>
+                </div>
+
+                <div style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 1.5rem; margin-bottom: 1.5rem; background: #f8fafc; display: flex; align-items: center; justify-content: space-between;">
+                    <div>
+                        <span style="display: block; font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 0.5rem;">Verifikasi Keamanan</span>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span id="math-question" style="font-size: 1.2rem; font-weight: 700; color: #1e293b; background: white; padding: 0.5rem 1rem; border-radius: 4px; border: 1px solid #cbd5e1;">? + ? =</span>
+                            <input type="number" id="math-answer" required style="width: 80px; padding: 0.8rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 1.1rem; text-align: center;" placeholder="Hasil">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">Daftar Sekarang</button>
+            </form>
+
+            <div class="login-link" id="login-container">
+                Sudah punya akun? <a href="#" onclick="showLogin()">Masuk di sini</a>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" style="display: none;">
+                <div style="background-color: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 1rem; margin-bottom: 1.5rem; display: flex; gap: 0.8rem; align-items: flex-start;">
+                    <i class="fas fa-info-circle" style="color: #3b82f6; font-size: 1.2rem; margin-top: 2px;"></i>
+                    <p style="color: #1e3a8a; font-size: 0.85rem; line-height: 1.4;">
+                        Login ini khusus untuk <strong>pendaftar RPL</strong>. Jika Anda sivitas akademika (mahasiswa/dosen/staf), silakan login melalui <strong>SSO Kampus</strong>.
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label>NIK (NOMOR INDUK KEPENDUDUKAN)</label>
+                    <input type="text" id="login-nik" class="form-control" placeholder="16 Digit Angka KTP" required>
+                </div>
+                
+                <div class="form-group" style="position: relative;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <label style="margin-bottom: 0;">PASSWORD</label>
+                        <a href="#" onclick="showLupaPassword()" style="font-size: 0.7rem; font-weight: 700; color: #348b61; text-decoration: none; letter-spacing: 0.5px;">LUPA PASSWORD?</a>
+                    </div>
+                    <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn-submit" style="margin-top: 1rem; margin-bottom: 2rem;">Masuk</button>
+                
+                <div style="text-align: center; border-top: 1px solid #e2e8f0; padding-top: 1.5rem;">
+                    <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5;">
+                        Belum memiliki akun pendaftar? Gunakan tombol <a href="index.html" style="color: #348b61; text-decoration: none; font-weight: 700;">"Buat Akun Pendaftaran"</a> di halaman utama.
+                    </p>
+                </div>
+            </form>
+            </form>
+
+            <!-- Lupa Password Form -->
+            <form id="lupa-form" style="display: none;" onsubmit="handleLupaPassword(event)">
+                <div style="background-color: #fef3c7; border: 1px solid #fde68a; border-radius: 6px; padding: 1rem; margin-bottom: 1.5rem; display: flex; gap: 0.8rem; align-items: flex-start;">
+                    <i class="fas fa-exclamation-triangle" style="color: #f59e0b; font-size: 1.2rem; margin-top: 2px;"></i>
+                    <p style="color: #92400e; font-size: 0.85rem; line-height: 1.4;">
+                        Masukkan alamat email yang Anda gunakan saat mendaftar. Kami akan mengirimkan tautan reset kata sandi ke email Anda.
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label>Alamat Email Terdaftar</label>
+                    <input type="email" id="lupa-email" class="form-control" placeholder="contoh@gmail.com" required>
+                </div>
+
+                <button type="submit" class="btn-submit" style="margin-top: 1rem; margin-bottom: 1rem;">Kirim Tautan Reset</button>
+                
+                <div style="text-align: center;">
+                    <a href="#" onclick="showLogin()" style="color: #64748b; font-size: 0.9rem; text-decoration: none;"><i class="fas fa-arrow-left"></i> Kembali ke Login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const registerForm = document.getElementById('register-form');
+        const loginForm = document.getElementById('login-form');
+        const lupaForm = document.getElementById('lupa-form');
+        const alertBox = document.getElementById('alert-box');
+        const loginContainer = document.getElementById('login-container');
+        const modalTitle = document.querySelector('.modal-title h2');
+        const modalSubtitle = document.querySelector('.modal-title p');
+        const reqs = document.querySelector('.password-reqs');
+        
+        // Math Captcha Logic
+        let mathAnswer = 0;
+        function generateCaptcha() {
+            const num1 = Math.floor(Math.random() * 10) + 1;
+            const num2 = Math.floor(Math.random() * 10) + 1;
+            mathAnswer = num1 + num2;
+            const questionEl = document.getElementById('math-question');
+            if(questionEl) questionEl.textContent = `${num1} + ${num2} =`;
+            const answerEl = document.getElementById('math-answer');
+            if(answerEl) answerEl.value = '';
+        }
+
+        function showAlert(msg, isSuccess = false) {
+            alertBox.style.display = 'block';
+            alertBox.textContent = msg;
+            alertBox.className = isSuccess ? 'alert alert-success' : 'alert alert-error';
+        }
+
+        function showLogin() {
+            registerForm.style.display = 'none';
+            loginContainer.style.display = 'none';
+            reqs.style.display = 'none';
+            loginForm.style.display = 'block';
+            lupaForm.style.display = 'none';
+            const captchaEl = document.querySelector('div[style*="Verifikasi Keamanan"]');
+            if(captchaEl) captchaEl.style.display = 'none';
+            modalTitle.textContent = 'Masuk ke Akun SPMB';
+            modalSubtitle.textContent = 'Khusus pendaftar jalur RPL';
+            alertBox.style.display = 'none';
+        }
+
+        function showRegister() {
+            registerForm.style.display = 'block';
+            loginContainer.style.display = 'block';
+            reqs.style.display = 'block';
+            loginForm.style.display = 'none';
+            lupaForm.style.display = 'none';
+            const captchaEl = document.querySelector('div[style*="Verifikasi Keamanan"]');
+            if(captchaEl) captchaEl.style.display = 'flex';
+            modalTitle.textContent = 'Registrasi Akun SPMB';
+            modalSubtitle.textContent = 'Buat akun untuk memulai pendaftaran jalur RPL';
+            alertBox.style.display = 'none';
+            generateCaptcha();
+        }
+
+        function showLupaPassword() {
+            registerForm.style.display = 'none';
+            loginContainer.style.display = 'none';
+            reqs.style.display = 'none';
+            loginForm.style.display = 'none';
+            lupaForm.style.display = 'block';
+            const captchaEl = document.querySelector('div[style*="Verifikasi Keamanan"]');
+            if(captchaEl) captchaEl.style.display = 'none';
+            modalTitle.textContent = 'Lupa Kata Sandi';
+            modalSubtitle.textContent = 'Reset kata sandi akun Anda';
+            alertBox.style.display = 'none';
+        }
+
+        // Cek URL Hash saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.location.hash === '#login') {
+                showLogin();
+            } else {
+                showRegister();
+            }
+        });
+
+        // Handle Register
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const answerEl = document.getElementById('math-answer');
+            if(parseInt(answerEl.value) !== mathAnswer) {
+                showAlert('Jawaban keamanan salah. Silakan coba lagi.');
+                generateCaptcha();
+                return;
+            }
+
+            const btn = registerForm.querySelector('button');
+            btn.textContent = 'Memproses...';
+
+            try {
+                const res = await fetch('api/register.php', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        nama: document.getElementById('reg-nama').value,
+                        nik: document.getElementById('reg-nik').value,
+                        nomor_hp: document.getElementById('reg-hp').value,
+                        tanggal_lahir: document.getElementById('reg-tanggal').value,
+                        email: document.getElementById('reg-email').value,
+                        prodi: document.getElementById('reg-prodi').value,
+                        password: document.getElementById('reg-password').value,
+                        konfirmasi_password: document.getElementById('reg-confirm').value
+                    })
+                });
+                const data = await res.json();
+                
+                if(data.success) {
+                    showAlert(data.message, true);
+                    registerForm.reset();
+                    setTimeout(showLogin, 2000);
+                } else {
+                    showAlert(data.message);
+                }
+            } catch (err) {
+                showAlert('Terjadi kesalahan koneksi.');
+            }
+            btn.textContent = 'Daftar Sekarang';
+        });
+
+        // Handle Login
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = loginForm.querySelector('button');
+            btn.textContent = 'Loading...';
+            
+            try {
+                const res = await fetch('api/login.php', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        nik: document.getElementById('login-nik').value,
+                        password: document.getElementById('login-password').value
+                    })
+                });
+                const data = await res.json();
+                
+                if(data.success) {
+                    localStorage.setItem('user_id', data.user_id);
+                    localStorage.setItem('role', data.role);
+                    
+                    if(data.role === 'admin') {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'peserta.html';
+                    }
+                } else {
+                    showAlert(data.message);
+                }
+            } catch (err) {
+                showAlert('Terjadi kesalahan koneksi.');
+            }
+            btn.textContent = 'Masuk';
+        });
+
+        // Handle Lupa Password
+        async function handleLupaPassword(e) {
+            e.preventDefault();
+            const btn = lupaForm.querySelector('button');
+            const originalText = btn.textContent;
+            btn.textContent = 'Memproses...';
+            
+            try {
+                const res = await fetch('api/reset_password.php', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        email: document.getElementById('lupa-email').value
+                    })
+                });
+                const data = await res.json();
+                
+                if(data.success) {
+                    showAlert(data.message, true);
+                    lupaForm.reset();
+                } else {
+                    showAlert(data.message);
+                }
+            } catch (err) {
+                showAlert('Terjadi kesalahan koneksi.');
+            }
+            btn.textContent = originalText;
+        }
+
+        // Load Prodi dynamically
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const res = await fetch('api/get_prodi.php');
+                const data = await res.json();
+                const select = document.getElementById('reg-prodi');
+                
+                if (data.success && data.data.length > 0) {
+                    select.innerHTML = '<option value="">-- Pilih Program Studi --</option>';
+                    data.data.forEach(p => {
+                        const opt = document.createElement('option');
+                        opt.value = p.nama_prodi;
+                        opt.textContent = p.nama_prodi;
+                        select.appendChild(opt);
+                    });
+                } else {
+                    select.innerHTML = '<option value="">-- Data Kosong --</option>';
+                }
+            } catch (e) {
+                console.error("Gagal load prodi", e);
+            }
+        });
+    </script>
+</body>
+</html>

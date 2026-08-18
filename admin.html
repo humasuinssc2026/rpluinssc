@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - RPL UINSSC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body { background-color: #f1f5f9; }
+        .admin-sidebar {
+            width: 250px; background: #0f172a; color: white; height: 100vh; position: fixed; left: 0; top: 0; padding: 1.5rem;
+        }
+        .admin-main { margin-left: 250px; padding: 2rem; }
+        .sidebar-brand { display: flex; align-items: center; gap: 0.5rem; font-size: 1.2rem; font-weight: 700; margin-bottom: 3rem; color: white; text-decoration: none; }
+        .sidebar-menu { list-style: none; }
+        .sidebar-menu li a { color: #94a3b8; text-decoration: none; padding: 0.8rem 1rem; display: flex; align-items: center; gap: 0.8rem; border-radius: 6px; transition: 0.2s; margin-bottom: 0.5rem; font-weight: 500; }
+        .sidebar-menu li a:hover, .sidebar-menu li a.active { background: #1e293b; color: white; }
+        .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .dashboard-card { background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
+        .table-responsive { overflow-x: auto; }
+        .admin-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        .admin-table th { background: #f8fafc; padding: 1rem; text-align: left; font-size: 0.85rem; color: #475569; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; }
+        .admin-table td { padding: 1rem; border-bottom: 1px solid #e2e8f0; font-size: 0.9rem; }
+        .status-badge { padding: 0.3rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .status-waiting { background: #fef9c3; color: #854d0e; }
+        .status-verified { background: #dcfce7; color: #166534; }
+        .status-rejected { background: #fee2e2; color: #991b1b; }
+        .btn-action { padding: 0.4rem 0.8rem; border-radius: 4px; border: none; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: 0.2s; }
+        .btn-verify { background: #22c55e; color: white; }
+        .btn-reject { background: #ef4444; color: white; margin-left: 0.5rem; }
+        .btn-view { background-color: #3b82f6; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; transition: 0.2s; }
+        .btn-view:hover { background-color: #2563eb; }
+        
+        /* Modal CSS */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: white; width: 90%; max-width: 600px; border-radius: 12px; padding: 2rem;
+            max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .modal-header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;
+            border-bottom: 1px solid #e2e8f0; padding-bottom: 1rem;
+        }
+        .modal-close {
+            background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #64748b;
+        }
+        .doc-list { list-style: none; padding: 0; margin: 0; }
+        .doc-list li { padding: 0.8rem 0; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; gap: 1rem;}
+        .doc-link { background: #eff6ff; color: #3b82f6; padding: 0.4rem 0.8rem; border-radius: 4px; text-decoration: none; font-size: 0.85rem; font-weight: bold; white-space: nowrap;}
+        .doc-missing { color: #ef4444; font-size: 0.85rem; font-weight: bold; white-space: nowrap;}
+        
+        /* Stats & Filter CSS */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .stat-card { background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; display: flex; flex-direction: column; }
+        .stat-value { font-size: 2rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; }
+        .stat-label { font-size: 0.85rem; color: #64748b; text-transform: uppercase; font-weight: 600; }
+        
+        .filter-bar { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .filter-input { padding: 0.6rem 1rem; border: 1px solid #cbd5e1; border-radius: 6px; width: 100%; max-width: 300px; font-family: inherit; }
+        .filter-select { padding: 0.6rem 1rem; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; }
+        
+        .bio-table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: 0.9rem; }
+        .bio-table td { padding: 0.5rem 0; border-bottom: 1px solid #f1f5f9; }
+        .bio-label { font-weight: 600; color: #475569; width: 40%; }
+        .bio-value { color: #1e293b; }
+    </style>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <aside class="admin-sidebar">
+        <a href="#" class="sidebar-brand">
+            <i class="fas fa-building" style="color: var(--primary-green);"></i> RPL Admin
+        </a>
+        <ul class="sidebar-menu">
+            <li><a href="#" class="active" id="menu-peserta" onclick="showSection('peserta')"><i class="fas fa-users"></i> Data Peserta</a></li>
+            <li><a href="#" id="menu-pembayaran" onclick="showSection('pembayaran')"><i class="fas fa-money-check-alt"></i> Validasi Pembayaran</a></li>
+            <li><a href="#" id="menu-konten" onclick="showSection('konten')"><i class="fas fa-edit"></i> Kelola Konten Web</a></li>
+            <li><a href="#" id="menu-prodi" onclick="showSection('prodi')"><i class="fas fa-graduation-cap"></i> Kelola Program Studi</a></li>
+            <li><a href="#" id="menu-slider" onclick="showSection('slider')"><i class="fas fa-images"></i> Kelola Slider</a></li>
+            <li><a href="#" id="menu-galeri" onclick="showSection('galeri')"><i class="fas fa-camera"></i> Manajemen Galeri</a></li>
+            <li><a href="#" id="menu-admin" onclick="showSection('admin')"><i class="fas fa-user-shield"></i> Manajemen Admin</a></li>
+            <li><a href="#" id="menu-logs" onclick="showSection('logs')"><i class="fas fa-history"></i> Log Aktivitas</a></li>
+            <li><a href="#" id="menu-settings" onclick="showSection('settings')"><i class="fas fa-cog"></i> Pengaturan Sistem</a></li>
+            <li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Keluar</a></li>
+        </ul>
+    </aside>
+
+    <main class="admin-main">
+        <div id="section-peserta">
+            <div class="dashboard-header">
+            <div style="display: flex; align-items: center;">
+                <button class="mobile-toggle" onclick="document.querySelector('.admin-sidebar').classList.toggle('open')"><i class="fas fa-bars"></i></button>
+                <div>
+                    <h1 style="font-size: 1.5rem; color: #1e293b;">Data Pendaftar RPL</h1>
+                    <p style="color: #64748b; font-size: 0.9rem;">Kelola dan verifikasi peserta yang mendaftar</p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <div style="position: relative; margin-right: 15px; cursor: pointer;">
+                    <i class="fas fa-bell" style="font-size: 1.5rem; color: #64748b;"></i>
+                    <span id="notif-badge" style="position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; font-size: 0.7rem; font-weight: bold; width: 18px; height: 18px; display: none; align-items: center; justify-content: center; border-radius: 50%;">0</span>
+                </div>
+                <button class="btn-sso" onclick="exportCSV()" style="background: #10b981; color: white; border: none;"><i class="fas fa-file-csv"></i> Export CSV</button>
+                <button class="btn-sso" onclick="loadPeserta()"><i class="fas fa-sync"></i> Refresh Data</button>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card" style="border-top: 4px solid #3b82f6;">
+                <div class="stat-value" id="stat-total">0</div>
+                <div class="stat-label">Total Pendaftar</div>
+            </div>
+            <div class="stat-card" style="border-top: 4px solid #f59e0b;">
+                <div class="stat-value" id="stat-menunggu-bayar">0</div>
+                <div class="stat-label">Menunggu Pembayaran</div>
+            </div>
+            <div class="stat-card" style="border-top: 4px solid #8b5cf6;">
+                <div class="stat-value" id="stat-menunggu-berkas">0</div>
+                <div class="stat-label">Menunggu Verifikasi Berkas</div>
+            </div>
+            <div class="stat-card" style="border-top: 4px solid #22c55e;">
+                <div class="stat-value" id="stat-terverifikasi">0</div>
+                <div class="stat-label">Terverifikasi Selesai</div>
+            </div>
+        </div>
+
+        <div class="dashboard-card" style="margin-bottom: 2rem;">
+            <h3 style="margin-top: 0; color: #1e293b;">Grafik Statistik Pendaftaran</h3>
+            <div style="height: 300px; width: 100%; display: flex; justify-content: center;">
+                <canvas id="statsChart"></canvas>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="filter-bar">
+                <input type="text" id="search-input" class="filter-input" placeholder="Cari Nama atau NIK...">
+                <select id="filter-status" class="filter-select">
+                    <option value="">Semua Status Pendaftaran</option>
+                    <option value="Menunggu Verifikasi">Menunggu Verifikasi</option>
+                    <option value="Terverifikasi">Terverifikasi</option>
+                    <option value="Ditolak">Ditolak</option>
+                </select>
+                <select id="filter-prodi" class="filter-select">
+                    <option value="">Semua Jenjang (S1/S2)</option>
+                    <option value="S1">S1 (Sarjana)</option>
+                    <option value="S2">S2 (Magister)</option>
+                </select>
+                <select id="filter-bayar" class="filter-select">
+                    <option value="">Semua Status Pembayaran</option>
+                    <option value="Lunas">Sudah Membayar (Lunas)</option>
+                    <option value="Belum">Belum Membayar</option>
+                </select>
+                <select id="filter-tahun" class="filter-select">
+                    <option value="">Semua Tahun Ajaran</option>
+                    <option value="2026">2026/2027</option>
+                    <option value="2025">2025/2026</option>
+                    <option value="2024">2024/2025</option>
+                </select>
+            </div>
+            <div id="loading" style="text-align: center; padding: 2rem; color: #64748b;">
+                <i class="fas fa-spinner fa-spin fa-2x"></i><br>Memuat data...
+            </div>
+            <div class="table-responsive" style="display: none;" id="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama</th>
+                            <th>NIK</th>
+                            <th>Email</th>
+                            <th>PROGRAM STUDI</th>
+                            <th>TGL DAFTAR</th>
+                            <th>STATUS DAFTAR</th>
+                            <th>PEMBAYARAN</th>
+                            <th>AKSI</th>
+                        </tr>
+                    </thead>
+                    <tbody id="peserta-body">
+                        <!-- Data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        </div>
+        </div> <!-- End of section-peserta -->
+
+        <!-- SECTION KONTEN CMS -->
+        <div id="section-konten" style="display: none;">
+            <div class="dashboard-header">
+                <div style="display: flex; align-items: center;">
+                    <button class="mobile-toggle" onclick="document.querySelector('.admin-sidebar').classList.toggle('open')"><i class="fas fa-bars"></i></button>
+                    <div>
+                        <h1 style="font-size: 1.5rem; color: #1e293b;">Kelola Konten Web</h1>
+                        <p style="color: #64748b; font-size: 0.9rem;">Atur pengumuman dan dokumen template untuk halaman utama</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <!-- Tambah Pengumuman -->
+                <div class="dashboard-card">
+                    <h3 style="margin-top:0; color: #1e293b;"><i class="fas fa-bullhorn"></i> Buat Pengumuman Baru</h3>
+                    <form id="form-pengumuman" onsubmit="savePengumuman(event)" style="margin-top:1rem;">
+                        <input type="text" id="p-judul" placeholder="Judul Pengumuman" required style="width: 100%; padding: 0.8rem; margin-bottom: 1rem; border: 1px solid #cbd5e1; border-radius: 6px;">
+                        <textarea id="p-isi" placeholder="Isi Pengumuman" required rows="5" style="width: 100%; padding: 0.8rem; margin-bottom: 1rem; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit;"></textarea>
+                        <button type="submit" class="btn-sso" style="background: #3b82f6; color: white; border: none; padding: 0.8rem 1.5rem;"><i class="fas fa-paper-plane"></i> Terbitkan</button>
+                    </form>
+                    <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 1.5rem 0;">
+                    <h4 style="margin-top:0;">Daftar Pengumuman</h4>
+                    <ul id="list-pengumuman" style="list-style:none; padding:0; margin:0;"></ul>
+                </div>
+
+                <!-- Tambah Unduhan -->
+                <div class="dashboard-card">
+                    <h3 style="margin-top:0; color: #1e293b;"><i class="fas fa-upload"></i> Unggah Dokumen Template</h3>
+                    <form id="form-unduhan" onsubmit="saveUnduhan(event)" style="margin-top:1rem;">
+                        <input type="text" id="u-nama" placeholder="Nama Dokumen (misal: Template CV)" required style="width: 100%; padding: 0.8rem; margin-bottom: 1rem; border: 1px solid #cbd5e1; border-radius: 6px;">
+                        <input type="file" id="u-file" required accept=".pdf,.doc,.docx,.xls,.xlsx,.zip" style="width: 100%; padding: 0.8rem; margin-bottom: 1rem; border: 1px solid #cbd5e1; border-radius: 6px;">
+                        <button type="submit" class="btn-sso" style="background: #10b981; color: white; border: none; padding: 0.8rem 1.5rem;"><i class="fas fa-cloud-upload-alt"></i> Unggah Dokumen</button>
+                    </form>
+                    <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 1.5rem 0;">
+                    <h4 style="margin-top:0;">Daftar Unduhan Resmi</h4>
+                    <ul id="list-unduhan" style="list-style:none; padding:0; margin:0;"></ul>
+                </div>
+            </div>
+
+            <!-- Prakata Rektor -->
+            <div style="margin-top: 2rem;">
+                <div class="dashboard-card">
+                    <h3 style="margin-top:0; color: #1e293b;"><i class="fas fa-user-tie"></i> Pengaturan Prakata Rektor</h3>
+                    <form id="form-rektor" onsubmit="saveRektor(event)" style="margin-top:1rem;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                            <input type="text" id="r-nama" placeholder="Nama Rektor (misal: Prof. Dr. ...)" required style="width: 100%; padding: 0.8rem; border: 1px solid #cbd5e1; border-radius: 6px;">
+                            <input type="text" id="r-jabatan" placeholder="Jabatan (misal: Rektor UIN...)" required style="width: 100%; padding: 0.8rem; border: 1px solid #cbd5e1; border-radius: 6px;">
+                        </div>
+                        <textarea id="r-teks" placeholder="Teks Prakata / Narasi" required rows="5" style="width: 100%; padding: 0.8rem; margin-bottom: 1rem; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit;"></textarea>
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #475569;">Ganti Foto (Kosongkan jika tidak ingin mengubah)</label>
+                            <input type="file" id="r-foto" accept="image/jpeg, image/png, image/webp" style="width: 100%; padding: 0.8rem; border: 1px solid #cbd5e1; border-radius: 6px;">
+                        </div>
+                        <button type="submit" class="btn-sso" style="background: #10b981; color: white; border: none; padding: 0.8rem 1.5rem;"><i class="fas fa-save"></i> Simpan Prakata Rektor</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SECTION SLIDER -->
+        <div id="section-slider" style="display: none;">
+            <div class="dashboard-header">
+                <div style="display: flex; align-items: center;">
+                    <button class="mobile-toggle" onclick="document.querySelector('.admin-sidebar').classList.toggle('open')"><i class="fas fa-bars"></i></button>
+                    <div>
+                        <h1 style="font-size: 1.5rem; color: #1e293b;">Kelola Slider / Header</h1>
+                        <p style="color: #64748b; font-size: 0.9rem;">Atur gambar dan konten slider untuk halaman utama publik</p>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn-sso" onclick="openSliderModal()" style="background: #3b82f6; color: white; border: none;"><i class="fas fa-plus"></i> Tambah Slider</button>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Gambar</th>
+                                <th>Judul</th>
+                                <th>Status</th>
+                                <th>Urutan</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="slider-admin-body">
+                            <!-- Data slider akan dimuat di sini -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION GALERI -->
+        <div id="section-galeri" style="display: none;">
+            <div class="dashboard-header">
+                <div style="display: flex; align-items: center;">
+                    <button class="mobile-toggle" onclick="document.querySelector('.admin-sidebar').classList.toggle('open')"><i class="fas fa-bars"></i></button>
+                    <div>
+                        <h1 style="font-size: 1.5rem; color: #1e293b;">Manajemen Galeri & Dokumentasi</h1>
+                        <p style="color: #64748b; font-size: 0.9rem;">Unggah dan kelola foto kegiatan akademik untuk ditampilkan di halaman utama</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem;">
+                <!-- Form Upload Galeri -->
+                <div class="dashboard-card" style="height: fit-content;">
+                    <h3 style="margin-top:0; color: #1e293b;"><i class="fas fa-upload"></i> Unggah Foto Baru</h3>
+                    <form id="form-galeri" onsubmit="saveGaleri(event)" style="margin-top:1rem;">
+                        <input type="file" id="g-file" required accept="image/jpeg, image/png, image/webp" style="width: 100%; padding: 0.8rem; margin-bottom: 1rem; border: 1px solid #cbd5e1; border-radius: 6px;">
+                        <button type="submit" class="btn-sso" style="background: #10b981; color: white; border: none; padding: 0.8rem 1.5rem; width: 100%;"><i class="fas fa-cloud-upload-alt"></i> Unggah Foto</button>
+                    </form>
+                </div>
+
+                <!-- Daftar Galeri -->
+                <div class="dashboard-card">
+                    <h3 style="margin-top:0; color: #1e293b;"><i class="fas fa-images"></i> Daftar Foto Galeri</h3>
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th width="10%">No</th>
+                                    <th width="30%">Preview</th>
+                                    <th width="40%">Tanggal Diunggah</th>
+                                    <th width="20%">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="galeri-admin-body">
+                                <tr><td colspan="4" style="text-align: center;">Memuat data...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION PRODI -->
+        <div id="section-prodi" style="display: none;">
+            <div class="dashboard-header">
+                <div style="display: flex; align-items: center;">
+                    <button class="mobile-toggle" onclick="document.querySelector('.admin-sidebar').classList.toggle('open')"><i class="fas fa-bars"></i></button>
+                    <div>
+                        <h1 style="font-size: 1.5rem; color: #1e293b;">Kelola Program Studi & Sertifikat</h1>
+                        <p style="color: #64748b; font-size: 0.9rem;">Unggah sertifikat penyelenggaraan RPL untuk setiap program studi</p>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn-sso" onclick="openProdiModal()" style="background: #3b82f6; color: white; border: none;"><i class="fas fa-plus"></i> Tambah Prodi</button>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Program Studi</th>
+                                <th>Nomor Penyelenggara</th>
+                                <th>Sertifikat Saat Ini</th>
+                                <th>Pedoman Prodi</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="prodi-admin-body">
+                            <!-- Data akan dimuat dari API -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION LOG AKTIVITAS -->
+        <div id="section-logs" style="display: none;">
+            <div class="dashboard-header">
+                <div style="display: flex; align-items: center;">
+                    <button class="mobile-toggle" onclick="document.querySelector('.admin-sidebar').classList.toggle('open')"><i class="fas fa-bars"></i></button>
+                    <div>
+                        <h1 style="font-size: 1.5rem; color: #1e293b;">Log Aktivitas Admin</h1>
+                        <p style="color: #64748b; font-size: 0.9rem;">Riwayat aksi yang dilakukan oleh seluruh administrator</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Waktu</th>
+                                <th>Admin ID</th>
+                                <th>Aksi</th>
+                                <th>Target / Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logs-body">
+                            <!-- Data logs -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION SETTINGS -->
+        <div id="section-settings" style="display: none;">
+            <div class="dashboard-header">
+                <div style="display: flex; align-items: center;">
+                    <button class="mobile-toggle" onclick="document.querySelector('.admin-sidebar').classList.toggle('open')"><i class="fas fa-bars"></i></button>
+                    <div>
+                        <h1 style="font-size: 1.5rem; color: #1e293b;">Pengaturan Sistem</h1>
+                        <p style="color: #64748b; font-size: 0.9rem;">Atur konfigurasi jadwal pendaftaran</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-card" style="max-width: 600px;">
+                <h3 style="margin-top:0; color: #1e293b;"><i class="far fa-calendar-alt"></i> Jadwal Pendaftaran</h3>
+                <form id="form-settings" onsubmit="saveSettings(event)" style="margin-top:1.5rem;">
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #475569;">Buka Pendaftaran</label>
+                        <input type="datetime-local" id="set-mulai" required style="width: 100%; padding: 0.8rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-family: inherit;">
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #475569;">Tutup Pendaftaran (Batas Akhir)</label>
+                        <input type="datetime-local" id="set-selesai" required style="width: 100%; padding: 0.8rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-family: inherit;">
+                    </div>
+                    <div style="margin-bottom: 2rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #475569;">Status Gelombang</label>
+                        <select id="set-isopen" required style="width: 100%; padding: 0.8rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-family: inherit;">
+                            <option value="true">DIBUKA (Menerima Pendaftar)</option>
+                            <option value="false">DITUTUP</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-action btn-verify" style="padding: 0.8rem 2rem; border-radius: 6px; width: 100%;">Simpan Pengaturan</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- SECTION VALIDASI PEMBAYARAN -->
+        <div id="section-pembayaran" style="display: none;">
+            <div class="dashboard-header">
+                <div style="display: flex; align-items: center;">
+                    <button class="mobile-toggle" onclick="document.querySelector('.admin-sidebar').classList.toggle('open')"><i class="fas fa-bars"></i></button>
+                    <div>
+                        <h1 style="font-size: 1.5rem; color: #1e293b;">Validasi Pembayaran</h1>
+                        <p style="color: #64748b; font-size: 0.9rem;">Verifikasi bukti pembayaran peserta</p>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn-sso" onclick="loadPembayaran()"><i class="fas fa-sync"></i> Refresh Data</button>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div id="loading-pembayaran" style="text-align: center; padding: 2rem; color: #64748b;">
+                    <i class="fas fa-spinner fa-spin fa-2x"></i><br>Memuat data...
+                </div>
+                <div class="table-responsive" style="display: none;" id="table-pembayaran-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama Peserta</th>
+                                <th>NIK</th>
+                                <th>Tanggal Daftar</th>
+                                <th>Bukti Pembayaran</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pembayaran-body">
+                            <!-- Data pembayaran akan dimuat di sini -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION MANAJEMEN ADMIN -->
+        <div id="section-admin" style="display: none;">
+            <div class="dashboard-header">
+                <div style="display: flex; align-items: center;">
+                    <button class="mobile-toggle" onclick="document.querySelector('.admin-sidebar').classList.toggle('open')"><i class="fas fa-bars"></i></button>
+                    <div>
+                        <h1 style="font-size: 1.5rem; color: #1e293b;">Manajemen Admin</h1>
+                        <p style="color: #64748b; font-size: 0.9rem;">Kelola akun administrator sistem</p>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn-sso" onclick="openAdminModal()" style="background: #3b82f6; color: white; border: none;"><i class="fas fa-plus"></i> Tambah Admin</button>
+                    <button class="btn-sso" onclick="loadAdmins()"><i class="fas fa-sync"></i> Refresh</button>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama</th>
+                                <th>Email</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-body">
+                            <!-- Data admin akan dimuat di sini -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal Dokumen -->
+    <div id="dokumen-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 1200px; display: grid; grid-template-columns: 350px 1fr; gap: 2rem;">
+            <div>
+                <div class="modal-header">
+                    <h3 style="margin:0; color:#1e293b;">Detail: <span id="modal-nama"></span></h3>
+                </div>
+                <div id="modal-body-content" style="max-height: 70vh; overflow-y: auto; padding-right: 10px;">
+                    <h4 style="margin-bottom:0.5rem; color:#348b61;">A. Biodata Lengkap</h4>
+                    <table class="bio-table">
+                        <tr><td class="bio-label">Nomor HP/WhatsApp</td><td class="bio-value" id="bio-hp"></td></tr>
+                        <tr><td class="bio-label">Tanggal Lahir</td><td class="bio-value" id="bio-lahir"></td></tr>
+                        <tr><td class="bio-label">Alamat Lengkap KTP</td><td class="bio-value" id="bio-alamat"></td></tr>
+                        <tr><td class="bio-label">Pendidikan Terakhir</td><td class="bio-value" id="bio-pendidikan"></td></tr>
+                        <tr><td class="bio-label">Nama Ibu Kandung</td><td class="bio-value" id="bio-ibu"></td></tr>
+                        <tr><td class="bio-label">Asal Instansi/Perusahaan</td><td class="bio-value" id="bio-instansi"></td></tr>
+                    </table>
+                    
+                    <h4 style="margin-bottom:0.5rem; color:#348b61;">B. Dokumen Formal</h4>
+                    <ul class="doc-list" id="modal-formal-list"></ul>
+                    
+                    <h4 style="margin-top:1.5rem; margin-bottom:0.5rem; color:#348b61;">C. Dokumen Nonformal</h4>
+                    <ul class="doc-list" id="modal-nonformal-list"></ul>
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: column;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 1rem;">
+                    <h3 style="margin: 0; color: #1e293b;">Viewer Dokumen</h3>
+                    <button class="modal-close" onclick="closeDokumenModal()">&times;</button>
+                </div>
+                <div id="pdf-viewer-container" style="flex: 1; background: #f1f5f9; border-radius: 8px; border: 1px solid #cbd5e1; display: flex; justify-content: center; align-items: center; min-height: 500px; overflow: hidden;">
+                    <p style="color: #64748b;">Klik tombol "Lihat" pada dokumen di samping untuk menampilkan pratinjau di sini.</p>
+                </div>
+                <!-- Tempat tombol aksi approve/reject per dokumen -->
+                <div id="doc-action-container" style="display: none; margin-top: 1rem; padding: 1rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
+                    <h4 style="margin: 0 0 0.5rem 0;" id="active-doc-title">-</h4>
+                    <input type="hidden" id="active-doc-key">
+                    <input type="hidden" id="active-peserta-id">
+                    <div style="display: flex; gap: 1rem;">
+                        <button class="btn-action btn-verify" onclick="setDocStatus('approved')" style="flex: 1;"><i class="fas fa-check"></i> Terima Dokumen Ini</button>
+                        <button class="btn-action btn-reject" onclick="setDocStatus('rejected')" style="flex: 1; margin: 0;"><i class="fas fa-times"></i> Tolak (Minta Revisi)</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Edit Peserta -->
+    <div id="edit-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 style="margin:0; color:#1e293b;">Edit Peserta</h3>
+                <button type="button" class="modal-close" onclick="closeEditModal()">&times;</button>
+            </div>
+            <form id="form-edit-peserta" onsubmit="saveEditPeserta(event)">
+                <input type="hidden" id="edit-id">
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Nama Lengkap</label>
+                    <input type="text" id="edit-nama" required class="filter-input" style="width: 100%; max-width: none; box-sizing: border-box;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">NIK</label>
+                    <input type="text" id="edit-nik" required class="filter-input" style="width: 100%; max-width: none; box-sizing: border-box;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Email</label>
+                    <input type="email" id="edit-email" required class="filter-input" style="width: 100%; max-width: none; box-sizing: border-box;">
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Program Studi</label>
+                    <input type="text" id="edit-prodi" required class="filter-input" style="width: 100%; max-width: none; box-sizing: border-box;">
+                </div>
+                <div style="text-align: right;">
+                    <button type="button" class="btn-action" style="background: #e2e8f0; color: #475569;" onclick="closeEditModal()">Batal</button>
+                    <button type="submit" class="btn-action" style="background: #3b82f6; color: white;">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Hasil RPL -->
+    <div id="hasil-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h3 style="margin:0; color:#1e293b;">Input Hasil Asesmen RPL</h3>
+                <button type="button" class="modal-close" onclick="closeHasilModal()">&times;</button>
+            </div>
+            
+            <div style="background: #f1f5f9; padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem; display: flex; gap: 1rem; align-items: center;">
+                <i class="fas fa-user-graduate" style="font-size: 2rem; color: #94a3b8;"></i>
+                <div>
+                    <h4 id="hasil-nama" style="margin: 0; color: #1e293b; font-size: 1.1rem;">Nama Peserta</h4>
+                    <p id="hasil-prodi" style="margin: 0; color: #64748b; font-size: 0.85rem;">Program Studi</p>
+                </div>
+            </div>
+
+            <input type="hidden" id="hasil-peserta-id">
+            
+            <div style="background: white; border: 1px solid #cbd5e1; padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem;">
+                <h5 style="margin: 0 0 0.8rem 0; color: #1e293b; font-size: 0.95rem;">Jadwal Asesmen / Wawancara</h5>
+                <div style="display: flex; gap: 0.5rem; align-items: flex-end;">
+                    <div style="flex: 1;">
+                        <label style="display: block; font-size: 0.8rem; color: #475569; margin-bottom: 0.3rem;">Tanggal & Waktu</label>
+                        <input type="text" id="input-jadwal-tgl" placeholder="Misal: 15 Agustus 2026, 09:00 WIB" class="filter-input" style="width: 100%; box-sizing: border-box;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="display: block; font-size: 0.8rem; color: #475569; margin-bottom: 0.3rem;">Lokasi / Link Zoom</label>
+                        <input type="text" id="input-jadwal-lokasi" placeholder="Misal: Ruang Sidang Lt.2 / Link Zoom" class="filter-input" style="width: 100%; box-sizing: border-box;">
+                    </div>
+                    <button type="button" class="btn-sso" onclick="saveJadwalAsesmen()" style="background: #3b82f6; color: white; border: none; padding: 0.65rem 1rem;"><i class="fas fa-save"></i> Simpan Jadwal</button>
+                </div>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid #cbd5e1; margin-bottom: 1.5rem;">
+            
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                <input type="text" id="input-kode-mk" placeholder="Kode MK" class="filter-input" style="width: 20%;">
+                <input type="text" id="input-nama-mk" placeholder="Nama Mata Kuliah" class="filter-input" style="flex: 1;">
+                <input type="number" id="input-sks" placeholder="SKS" class="filter-input" style="width: 15%;">
+                <input type="text" id="input-nilai" placeholder="Nilai (Misal: A)" class="filter-input" style="width: 15%;">
+                <button type="button" class="btn-sso" onclick="addHasilRPL()" style="background: #22c55e; color: white; border: none; padding: 0.6rem 1rem;"><i class="fas fa-plus"></i></button>
+            </div>
+
+            <table class="admin-table" style="margin-top: 0;">
+                <thead>
+                    <tr>
+                        <th style="padding: 0.5rem;">Kode MK</th>
+                        <th style="padding: 0.5rem;">Nama MK</th>
+                        <th style="padding: 0.5rem;">SKS</th>
+                        <th style="padding: 0.5rem;">Nilai</th>
+                        <th style="padding: 0.5rem;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="hasil-rpl-body">
+                    <!-- Data Hasil -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal Prodi -->
+    <div id="prodi-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 style="margin:0; color:#1e293b;" id="prodi-modal-title">Tambah Program Studi</h3>
+                <button type="button" class="modal-close" onclick="closeProdiModal()">&times;</button>
+            </div>
+            <form id="form-prodi" onsubmit="saveProdi(event)">
+                <input type="hidden" id="prodi-id">
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Nama Program Studi</label>
+                    <input type="text" id="prodi-nama" required class="filter-input" style="width: 100%; max-width: none; box-sizing: border-box;">
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Nomor Penyelenggara</label>
+                    <input type="text" id="prodi-nomor" required class="filter-input" style="width: 100%; max-width: none; box-sizing: border-box;">
+                </div>
+                <div style="text-align: right;">
+                    <button type="button" class="btn-action" style="background: #e2e8f0; color: #475569;" onclick="closeProdiModal()">Batal</button>
+                    <button type="submit" class="btn-action" style="background: #3b82f6; color: white;">Simpan Program Studi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Admin -->
+    <div id="admin-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 style="margin:0; color:#1e293b;" id="admin-modal-title">Tambah Admin Baru</h3>
+                <button type="button" class="modal-close" onclick="closeAdminModal()">&times;</button>
+            </div>
+            <form id="form-admin" onsubmit="saveAdmin(event)">
+                <input type="hidden" id="admin-id">
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Nama Lengkap</label>
+                    <input type="text" id="admin-nama" required class="filter-input" style="width: 100%; max-width: none; box-sizing: border-box;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Email</label>
+                    <input type="email" id="admin-email" required class="filter-input" style="width: 100%; max-width: none; box-sizing: border-box;">
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Kata Sandi <span id="admin-password-note" style="font-size: 0.8rem; font-weight: normal; color: #64748b;"></span></label>
+                    <input type="password" id="admin-password" class="filter-input" style="width: 100%; max-width: none; box-sizing: border-box;">
+                </div>
+                <div style="text-align: right;">
+                    <button type="button" class="btn-action" style="background: #e2e8f0; color: #475569;" onclick="closeAdminModal()">Batal</button>
+                    <button type="submit" class="btn-action" style="background: #10b981; color: white;">Simpan Admin</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Slider -->
+    <div id="slider-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 style="margin:0; color:#1e293b;" id="slider-modal-title">Tambah Slider</h3>
+                <button type="button" class="modal-close" onclick="closeSliderModal()">&times;</button>
+            </div>
+            <form id="form-slider" onsubmit="saveSlider(event)">
+                <input type="hidden" id="slider-id">
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Gambar (Rekomendasi: 1920x500px)</label>
+                    <input type="file" id="slider-image" accept="image/*" class="filter-input" style="width: 100%; max-width: none; box-sizing: border-box;">
+                    <small id="slider-image-note" style="color: #64748b; display: block; margin-top: 5px;">Biarkan kosong jika tidak ingin mengubah gambar.</small>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Judul (Opsional)</label>
+                    <input type="text" id="slider-title" class="filter-input" style="width: 100%; max-width: none; box-sizing: border-box;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Subjudul (Opsional)</label>
+                    <textarea id="slider-subtitle" class="filter-input" rows="2" style="width: 100%; max-width: none; box-sizing: border-box;"></textarea>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                    <div style="flex: 1;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Teks Tombol (Opsional)</label>
+                        <input type="text" id="slider-btn-text" placeholder="Misal: Daftar Sekarang" class="filter-input" style="width: 100%; box-sizing: border-box;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Tautan Tombol (Opsional)</label>
+                        <input type="text" id="slider-btn-link" placeholder="Misal: https://..." class="filter-input" style="width: 100%; box-sizing: border-box;">
+                    </div>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div style="flex: 1;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Status</label>
+                        <select id="slider-status" class="filter-input" style="width: 100%; box-sizing: border-box;">
+                            <option value="1">Aktif</option>
+                            <option value="0">Tidak Aktif</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Urutan</label>
+                        <input type="number" id="slider-urutan" value="0" class="filter-input" style="width: 100%; box-sizing: border-box;">
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <button type="button" class="btn-action" style="background: #e2e8f0; color: #475569;" onclick="closeSliderModal()">Batal</button>
+                    <button type="submit" class="btn-action" style="background: #3b82f6; color: white;">Simpan Slider</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Bukti Pembayaran -->
+    <div id="bukti-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3 style="margin:0; color:#1e293b;">Bukti Pembayaran: <span id="bukti-nama"></span></h3>
+                <button type="button" class="modal-close" onclick="closeBuktiModal()">&times;</button>
+            </div>
+            <div id="bukti-viewer-container" style="background: #f1f5f9; border-radius: 8px; border: 1px solid #cbd5e1; display: flex; justify-content: center; align-items: center; min-height: 400px; overflow: hidden; margin-bottom: 1.5rem;">
+                <!-- Gambar/PDF Bukti -->
+            </div>
+            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                <input type="hidden" id="bukti-user-id">
+                <button class="btn-action btn-reject" onclick="processPembayaran('Belum')"><i class="fas fa-times"></i> Tolak (Minta Ulang)</button>
+                <button class="btn-action btn-verify" onclick="processPembayaran('Lunas')" style="background: #10b981;"><i class="fas fa-check"></i> Setujui (Lunas)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Kelola Pedoman Prodi -->
+    <div id="pedoman-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 1000px;">
+            <div class="modal-header">
+                <h3 style="margin:0; color:#1e293b;">Kelola File Pedoman: <span id="pedoman-prodi-nama"></span></h3>
+                <button type="button" class="modal-close" onclick="closePedomanModal()">&times;</button>
+            </div>
+            
+            <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 1.5rem;">
+                <h4 style="margin-top: 0; margin-bottom: 1rem; color: #334155;">Unggah Pedoman Baru</h4>
+                <form onsubmit="uploadPedomanFile(event)" style="display: flex; gap: 1rem; align-items: flex-end;">
+                    <input type="hidden" id="pedoman-prodi-id">
+                    <div style="flex: 1;">
+                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: #475569;">Nama Dokumen (Contoh: Buku Panduan S1)</label>
+                        <input type="text" id="pedoman-nama-dokumen" required style="width: 100%; padding: 0.6rem; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: #475569;">File (PDF/DOC)</label>
+                        <input type="file" id="pedoman-file-input" required accept=".pdf,.doc,.docx" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px; background: white; box-sizing: border-box;">
+                    </div>
+                    <button type="submit" class="btn-hero btn-green" style="padding: 0.6rem 1.2rem; border-radius: 4px; font-size: 0.9rem; border: none; cursor: pointer; white-space: nowrap;"><i class="fas fa-upload"></i> Unggah</button>
+                </form>
+            </div>
+
+            <h4 style="margin-top: 0; margin-bottom: 1rem; color: #334155;">Daftar File Tersimpan</h4>
+            <div style="overflow-x: auto;">
+                <table class="admin-table" style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th width="10%">No</th>
+                            <th width="40%">Nama Dokumen</th>
+                            <th width="30%">Tanggal Upload</th>
+                            <th width="20%">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pedoman-files-body">
+                        <tr><td colspan="4" style="text-align: center;">Memuat file...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Hasil Konversi SKS -->
+    <div id="hasil-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3 style="margin:0; color:#1e293b;">Input Hasil Konversi SKS</h3>
+                <button type="button" class="modal-close" onclick="closeHasilModal()">&times;</button>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <p><strong>Nama Peserta:</strong> <span id="hasil-nama"></span></p>
+                <p><strong>Program Studi:</strong> <span id="hasil-prodi"></span></p>
+            </div>
+            
+            <form id="form-hasil" onsubmit="saveHasilRpl(event)">
+                <input type="hidden" id="hasil-peserta-id">
+                
+                <table class="admin-table" style="margin-bottom: 1rem;">
+                    <thead>
+                        <tr>
+                            <th width="20%">Kode MK</th>
+                            <th width="45%">Mata Kuliah Diakui</th>
+                            <th width="15%">SKS</th>
+                            <th width="15%">Nilai (A/B/C)</th>
+                            <th width="5%"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="hasil-mk-body">
+                        <!-- Baris MK dinamis -->
+                    </tbody>
+                </table>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <button type="button" class="btn-sso" style="background: #e2e8f0; color: #1e293b; border: none;" onclick="addMkRow()">+ Tambah Mata Kuliah</button>
+                </div>
+
+                <div style="text-align: right; border-top: 1px solid #e2e8f0; padding-top: 1rem;">
+                    <button type="button" class="btn-action" style="background: #ef4444; color: white;" onclick="cetakSKKonversi()"><i class="fas fa-print"></i> Cetak SK PDF</button>
+                    <button type="submit" class="btn-action" style="background: #10b981; color: white;"><i class="fas fa-save"></i> Simpan Nilai</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Edit Unduhan -->
+    <div id="edit-unduhan-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 style="margin:0; color:#1e293b;">Edit Dokumen Unduhan</h3>
+                <button type="button" class="modal-close" onclick="closeEditUnduhanModal()">&times;</button>
+            </div>
+            <form id="form-edit-unduhan" onsubmit="saveEditUnduhan(event)">
+                <input type="hidden" id="e-unduhan-id">
+                <div style="margin-bottom: 1rem;">
+                    <label style="display:block; margin-bottom: 0.5rem; font-size: 0.9rem; font-weight: 600;">Nama Dokumen</label>
+                    <input type="text" id="e-u-nama" required style="width: 100%; padding: 0.8rem; border: 1px solid #cbd5e1; border-radius: 6px;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display:block; margin-bottom: 0.5rem; font-size: 0.9rem; font-weight: 600;">File Dokumen <span style="color:#64748b; font-size:0.8rem; font-weight:normal;">(Kosongkan jika tidak diubah)</span></label>
+                    <input type="file" id="e-u-file" accept=".pdf,.doc,.docx,.xls,.xlsx,.zip" style="width: 100%; padding: 0.8rem; border: 1px solid #cbd5e1; border-radius: 6px;">
+                </div>
+                <div style="text-align: right; margin-top: 1.5rem;">
+                    <button type="submit" class="btn-action" style="background: #10b981; color: white;"><i class="fas fa-save"></i> Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

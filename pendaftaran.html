@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pendaftaran & Alur RPL UINSSC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 8rem 5% 4rem;
+            text-align: center;
+        }
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background-color: var(--primary-color);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2px;
+            opacity: 0.2;
+        }
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+        }
+        .timeline-item.left { left: 0; }
+        .timeline-item.right { left: 50%; }
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            right: -10px;
+            background-color: white;
+            border: 4px solid var(--accent-color);
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .timeline-item.right::after {
+            left: -10px;
+        }
+        .timeline-content {
+            padding: 20px;
+            background-color: white;
+            position: relative;
+            border-radius: 8px;
+            box-shadow: var(--shadow-md);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <a href="index.html" class="nav-brand">
+            <i class="fas fa-graduation-cap"></i> RPL UINSSC
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html">Beranda</a></li>
+            <li><a href="index.html#tentang">Tentang RPL</a></li>
+            <li><a href="index.html#prodi">Program Studi</a></li>
+            <li><a href="pendaftaran.html" class="active">Alur Pendaftaran</a></li>
+        </ul>
+        <div class="nav-buttons">
+            <a href="login.html" class="btn btn-outline">Masuk</a>
+            <a href="login.html" class="btn btn-primary">Daftar Sekarang</a>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="page-header">
+        <h1>Panduan & Alur Pendaftaran RPL</h1>
+        <p>Langkah-langkah mudah untuk mengkonversi pengalaman Anda menjadi SKS akademik.</p>
+    </header>
+
+    <!-- Timeline Section -->
+    <section class="section">
+        <h2 class="section-title">Tahapan Pendaftaran</h2>
+        
+        <div class="timeline">
+            <div class="timeline-item left">
+                <div class="timeline-content">
+                    <h3 style="color: var(--primary-color);">1. Pendaftaran Online</h3>
+                    <p>Calon mahasiswa membuat akun di portal ini, mengisi biodata, dan membayar biaya pendaftaran melalui bank yang ditunjuk.</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item right">
+                <div class="timeline-content">
+                    <h3 style="color: var(--primary-color);">2. Unggah Dokumen (Portofolio)</h3>
+                    <p>Unggah ijazah terakhir, transkrip nilai (jika ada), sertifikat pelatihan, dan dokumen bukti pengalaman kerja/prestasi lainnya.</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item left">
+                <div class="timeline-content">
+                    <h3 style="color: var(--primary-color);">3. Asesmen & Validasi</h3>
+                    <p>Tim Asesor UINSSC akan memvalidasi dokumen portofolio Anda dan melakukan wawancara (jika diperlukan) untuk menentukan jumlah SKS yang diakui.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item right">
+                <div class="timeline-content">
+                    <h3 style="color: var(--primary-color);">4. Pengumuman Kelulusan</h3>
+                    <p>Hasil asesmen dan jumlah SKS yang dikonversi akan diumumkan secara online melalui akun masing-masing peserta.</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item left">
+                <div class="timeline-content">
+                    <h3 style="color: var(--primary-color);">5. Registrasi Ulang</h3>
+                    <p>Mahasiswa yang dinyatakan lolos melakukan daftar ulang, membayar UKT, dan bersiap untuk memulai perkuliahan sisa SKS.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 4rem;">
+            <a href="login.html" class="btn btn-primary" style="font-size: 1.2rem; padding: 1rem 3rem;">Mulai Pendaftaran Sekarang</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-bottom" style="padding-top: 1rem; border: none;">
+            <p>&copy; 2026 UINSSC. Hak Cipta Dilindungi Undang-Undang.</p>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
