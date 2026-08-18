@@ -165,8 +165,8 @@
     <div class="modal-card">
         <div class="modal-header">
             <div class="modal-title">
-                <h2>Registrasi Akun SPMB</h2>
-                <p>Buat akun untuk memulai pendaftaran jalur RPL</p>
+                <h2>Login Admin RPL</h2>
+                <p>Sistem Rekognisi Pembelajaran Lampau</p>
             </div>
             <a href="index.html" class="btn-close"><i class="fas fa-times"></i></a>
         </div>
@@ -174,91 +174,18 @@
         <div class="modal-body">
             <div id="alert-box" class="alert"></div>
 
-            <form id="register-form">
-                <div class="form-grid">
-                    <div class="form-group full">
-                        <label>Nama Lengkap (Sesuai KTP)</label>
-                        <input type="text" id="reg-nama" class="form-control" placeholder="NAMA LENGKAP" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>NIK (KTP)</label>
-                        <input type="text" id="reg-nik" class="form-control" placeholder="16 digit angka KTP" maxlength="16" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Nomor HP / WhatsApp</label>
-                        <input type="text" id="reg-hp" class="form-control" placeholder="081234567890" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Alamat Email Aktif</label>
-                        <input type="email" id="reg-email" class="form-control" placeholder="contoh@gmail.com" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Tanggal Lahir</label>
-                        <input type="date" id="reg-tanggal" class="form-control" required>
-                    </div>
-
-                    <div class="form-group full">
-                        <label>Pilihan Program Studi</label>
-                        <select id="reg-prodi" class="form-control" required style="background: white;">
-                            <option value="">Memuat Program Studi...</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Buat Password</label>
-                        <input type="password" id="reg-password" class="form-control" placeholder="••••••••" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Konfirmasi Password</label>
-                        <input type="password" id="reg-confirm" class="form-control" placeholder="••••••••" required>
-                    </div>
-                </div>
-
-                <div class="password-reqs">
-                    <h4>Syarat Keamanan Password:</h4>
-                    <div class="reqs-grid">
-                        <div class="req-item"><i class="fas fa-circle"></i> Min. 8 karakter</div>
-                        <div class="req-item"><i class="fas fa-circle"></i> Huruf besar (A-Z)</div>
-                        <div class="req-item"><i class="fas fa-circle"></i> Huruf kecil (a-z)</div>
-                        <div class="req-item"><i class="fas fa-circle"></i> Angka (0-9)</div>
-                        <div class="req-item"><i class="fas fa-circle"></i> Simbol (@$!%*?&#)</div>
-                    </div>
-                </div>
-
-                <div style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 1.5rem; margin-bottom: 1.5rem; background: #f8fafc; display: flex; align-items: center; justify-content: space-between;">
-                    <div>
-                        <span style="display: block; font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 0.5rem;">Verifikasi Keamanan</span>
-                        <div style="display: flex; align-items: center; gap: 1rem;">
-                            <span id="math-question" style="font-size: 1.2rem; font-weight: 700; color: #1e293b; background: white; padding: 0.5rem 1rem; border-radius: 4px; border: 1px solid #cbd5e1;">? + ? =</span>
-                            <input type="number" id="math-answer" required style="width: 80px; padding: 0.8rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 1.1rem; text-align: center;" placeholder="Hasil">
-                        </div>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn-submit">Daftar Sekarang</button>
-            </form>
-
-            <div class="login-link" id="login-container">
-                Sudah punya akun? <a href="#" onclick="showLogin()">Masuk di sini</a>
-            </div>
-
             <!-- Login Form -->
-            <form id="login-form" style="display: none;">
+            <form id="login-form" style="display: block;">
                 <div style="background-color: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 1rem; margin-bottom: 1.5rem; display: flex; gap: 0.8rem; align-items: flex-start;">
                     <i class="fas fa-info-circle" style="color: #3b82f6; font-size: 1.2rem; margin-top: 2px;"></i>
                     <p style="color: #1e3a8a; font-size: 0.85rem; line-height: 1.4;">
-                        Login ini khusus untuk <strong>pendaftar RPL</strong>. Jika Anda sivitas akademika (mahasiswa/dosen/staf), silakan login melalui <strong>SSO Kampus</strong>.
+                        Login ini khusus untuk <strong>Admin</strong>.
                     </p>
                 </div>
 
                 <div class="form-group">
-                    <label>NIK (NOMOR INDUK KEPENDUDUKAN)</label>
-                    <input type="text" id="login-nik" class="form-control" placeholder="16 Digit Angka KTP" required>
+                    <label>EMAIL / NIK</label>
+                    <input type="text" id="login-nik" class="form-control" placeholder="Email Admin atau NIK Pendaftar" required>
                 </div>
                 
                 <div class="form-group" style="position: relative;">
@@ -273,10 +200,10 @@
                 
                 <div style="text-align: center; border-top: 1px solid #e2e8f0; padding-top: 1.5rem;">
                     <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5;">
-                        Belum memiliki akun pendaftar? Gunakan tombol <a href="index.html" style="color: #348b61; text-decoration: none; font-weight: 700;">"Buat Akun Pendaftaran"</a> di halaman utama.
+                        Pendaftar RPL silakan daftar dan login melalui <br>
+                        <a href="https://admisi.uinssc.ac.id/" target="_blank" style="color: #348b61; text-decoration: none; font-weight: 700;">Portal Admisi UINSSC</a>
                     </p>
                 </div>
-            </form>
             </form>
 
             <!-- Lupa Password Form -->
@@ -331,40 +258,16 @@
         }
 
         function showLogin() {
-            registerForm.style.display = 'none';
-            loginContainer.style.display = 'none';
-            reqs.style.display = 'none';
             loginForm.style.display = 'block';
             lupaForm.style.display = 'none';
-            const captchaEl = document.querySelector('div[style*="Verifikasi Keamanan"]');
-            if(captchaEl) captchaEl.style.display = 'none';
-            modalTitle.textContent = 'Masuk ke Akun SPMB';
-            modalSubtitle.textContent = 'Khusus pendaftar jalur RPL';
+            modalTitle.textContent = 'Login Admin RPL';
+            modalSubtitle.textContent = 'Sistem Rekognisi Pembelajaran Lampau';
             alertBox.style.display = 'none';
-        }
-
-        function showRegister() {
-            registerForm.style.display = 'block';
-            loginContainer.style.display = 'block';
-            reqs.style.display = 'block';
-            loginForm.style.display = 'none';
-            lupaForm.style.display = 'none';
-            const captchaEl = document.querySelector('div[style*="Verifikasi Keamanan"]');
-            if(captchaEl) captchaEl.style.display = 'flex';
-            modalTitle.textContent = 'Registrasi Akun SPMB';
-            modalSubtitle.textContent = 'Buat akun untuk memulai pendaftaran jalur RPL';
-            alertBox.style.display = 'none';
-            generateCaptcha();
         }
 
         function showLupaPassword() {
-            registerForm.style.display = 'none';
-            loginContainer.style.display = 'none';
-            reqs.style.display = 'none';
             loginForm.style.display = 'none';
             lupaForm.style.display = 'block';
-            const captchaEl = document.querySelector('div[style*="Verifikasi Keamanan"]');
-            if(captchaEl) captchaEl.style.display = 'none';
             modalTitle.textContent = 'Lupa Kata Sandi';
             modalSubtitle.textContent = 'Reset kata sandi akun Anda';
             alertBox.style.display = 'none';
@@ -372,56 +275,10 @@
 
         // Cek URL Hash saat halaman dimuat
         document.addEventListener('DOMContentLoaded', () => {
-            if (window.location.hash === '#login') {
-                showLogin();
-            } else {
-                showRegister();
-            }
+            showLogin();
         });
 
-        // Handle Register
-        registerForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const answerEl = document.getElementById('math-answer');
-            if(parseInt(answerEl.value) !== mathAnswer) {
-                showAlert('Jawaban keamanan salah. Silakan coba lagi.');
-                generateCaptcha();
-                return;
-            }
-
-            const btn = registerForm.querySelector('button');
-            btn.textContent = 'Memproses...';
-
-            try {
-                const res = await fetch('api/register.php', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        nama: document.getElementById('reg-nama').value,
-                        nik: document.getElementById('reg-nik').value,
-                        nomor_hp: document.getElementById('reg-hp').value,
-                        tanggal_lahir: document.getElementById('reg-tanggal').value,
-                        email: document.getElementById('reg-email').value,
-                        prodi: document.getElementById('reg-prodi').value,
-                        password: document.getElementById('reg-password').value,
-                        konfirmasi_password: document.getElementById('reg-confirm').value
-                    })
-                });
-                const data = await res.json();
-                
-                if(data.success) {
-                    showAlert(data.message, true);
-                    registerForm.reset();
-                    setTimeout(showLogin, 2000);
-                } else {
-                    showAlert(data.message);
-                }
-            } catch (err) {
-                showAlert('Terjadi kesalahan koneksi.');
-            }
-            btn.textContent = 'Daftar Sekarang';
-        });
+        // Register form removed.
 
         // Handle Login
         loginForm.addEventListener('submit', async (e) => {
