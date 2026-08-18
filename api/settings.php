@@ -29,16 +29,22 @@ $userId = $admin ? $admin['id'] : null;
     $data = json_decode(file_get_contents('php://input'), true);
     try {
         $pdo->beginTransaction();
-        $stmt = $pdo->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = ?");
         
-        if (isset($data['jadwal_mulai'])) $stmt->execute([$data['jadwal_mulai'], 'jadwal_mulai']);
-        if (isset($data['jadwal_selesai'])) $stmt->execute([$data['jadwal_selesai'], 'jadwal_selesai']);
-        if (isset($data['is_open'])) $stmt->execute([$data['is_open'], 'is_open']);
+        $stmt_check = $pdo->prepare("SELECT COUNT(*) FROM settings WHERE setting_key = ?");
+        $stmt_insert = $pdo->prepare("INSERT INTO settings (setting_key, setting_value) VALUES (?, ?)");
+        $stmt_update = $pdo->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = ?");
         
-        if (isset($data['kontak_wa'])) $stmt->execute([$data['kontak_wa'], 'kontak_wa']);
-        if (isset($data['kontak_email'])) $stmt->execute([$data['kontak_email'], 'kontak_email']);
-        if (isset($data['kontak_telepon'])) $stmt->execute([$data['kontak_telepon'], 'kontak_telepon']);
-        if (isset($data['teks_berjalan'])) $stmt->execute([$data['teks_berjalan'], 'teks_berjalan']);
+        foreach ($data as $key => $value) {
+            // Cek apakah key ada
+            $stmt_check->execute([$key]);
+            if ($stmt_check->fetchColumn() > 0) {
+                // Update
+                $stmt_update->execute([$value, $key]);
+            } else {
+                // Insert
+                $stmt_insert->execute([$key, $value]);
+            }
+        }
 
         $pdo->commit();
         
