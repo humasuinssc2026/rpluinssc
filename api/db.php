@@ -106,6 +106,12 @@ try {
     $pdo->exec("INSERT OR IGNORE INTO settings (setting_key, setting_value) VALUES ('rektor_teks', 'Selamat datang di Portal Rekognisi Pembelajaran Lampau (RPL) Universitas Islam Negeri Siber Syekh Nurjati Cirebon. Program RPL ini kami dedikasikan untuk memberikan akses pendidikan tinggi yang inklusif dan berkualitas bagi seluruh lapisan masyarakat. Kami menghargai setiap pengalaman kerja dan kompetensi yang telah Anda bangun, serta memberikan peluang untuk mengonversinya menjadi SKS agar Anda dapat meraih gelar sarjana dengan lebih cepat. UIN Siber Syekh Nurjati Cirebon berkomitmen untuk terus menjadi pionir pendidikan siber Islam terdepan yang adaptif terhadap perkembangan zaman.')");
     $pdo->exec("INSERT OR IGNORE INTO settings (setting_key, setting_value) VALUES ('rektor_foto', 'uploads/foto_rektor.png')");
 
+    // Pengaturan Web Default
+    $pdo->exec("INSERT OR IGNORE INTO settings (setting_key, setting_value) VALUES ('kontak_wa', '6281234567890')");
+    $pdo->exec("INSERT OR IGNORE INTO settings (setting_key, setting_value) VALUES ('kontak_email', 'admisi.uinssc')");
+    $pdo->exec("INSERT OR IGNORE INTO settings (setting_key, setting_value) VALUES ('kontak_telepon', '082231820660')");
+    $pdo->exec("INSERT OR IGNORE INTO settings (setting_key, setting_value) VALUES ('teks_berjalan', 'Pendaftaran RPL Program Sarjana (S-1) Gelombang 1 Dibuka — Batas akhir pembayaran: 30 Juli 2026 23:59:00 WIB')");
+
     // Otomatis buat 1 akun admin default jika belum ada
     $stmt = $pdo->query("SELECT COUNT(*) FROM users WHERE role = 'admin'");
     if ($stmt->fetchColumn() == 0) {

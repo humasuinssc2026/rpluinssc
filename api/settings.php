@@ -27,17 +27,19 @@ $userId = $admin ? $admin['id'] : null;
     }
 
     $data = json_decode(file_get_contents('php://input'), true);
-    if (!isset($data['jadwal_mulai']) || !isset($data['jadwal_selesai']) || !isset($data['is_open'])) {
-        echo json_encode(['success' => false, 'message' => 'Data tidak lengkap.']);
-        exit;
-    }
-
     try {
         $pdo->beginTransaction();
         $stmt = $pdo->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = ?");
-        $stmt->execute([$data['jadwal_mulai'], 'jadwal_mulai']);
-        $stmt->execute([$data['jadwal_selesai'], 'jadwal_selesai']);
-        $stmt->execute([$data['is_open'], 'is_open']);
+        
+        if (isset($data['jadwal_mulai'])) $stmt->execute([$data['jadwal_mulai'], 'jadwal_mulai']);
+        if (isset($data['jadwal_selesai'])) $stmt->execute([$data['jadwal_selesai'], 'jadwal_selesai']);
+        if (isset($data['is_open'])) $stmt->execute([$data['is_open'], 'is_open']);
+        
+        if (isset($data['kontak_wa'])) $stmt->execute([$data['kontak_wa'], 'kontak_wa']);
+        if (isset($data['kontak_email'])) $stmt->execute([$data['kontak_email'], 'kontak_email']);
+        if (isset($data['kontak_telepon'])) $stmt->execute([$data['kontak_telepon'], 'kontak_telepon']);
+        if (isset($data['teks_berjalan'])) $stmt->execute([$data['teks_berjalan'], 'teks_berjalan']);
+
         $pdo->commit();
         
         echo json_encode(['success' => true, 'message' => 'Pengaturan jadwal berhasil disimpan.']);
