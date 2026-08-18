@@ -268,42 +268,8 @@
                             <th style="padding: 1rem; text-align: left; font-weight: 600; width: 30%; text-transform: uppercase;">Tanggal</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr style="border-bottom: 1px solid #e2e8f0;">
-                            <td style="padding: 1rem; text-align: center; border-right: 1px solid #e2e8f0;">1</td>
-                            <td style="padding: 1rem; border-right: 1px solid #e2e8f0;">Pendaftaran & Unggah Portofolio</td>
-                            <td style="padding: 1rem;">18 Mei - 14 Juli 2026</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #e2e8f0; background: #fafaf9;">
-                            <td style="padding: 1rem; text-align: center; border-right: 1px solid #e2e8f0;">2</td>
-                            <td style="padding: 1rem; border-right: 1px solid #e2e8f0;">Seleksi Administrasi</td>
-                            <td style="padding: 1rem;">17 Juli 2026</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #e2e8f0;">
-                            <td style="padding: 1rem; text-align: center; border-right: 1px solid #e2e8f0;">3</td>
-                            <td style="padding: 1rem; border-right: 1px solid #e2e8f0;">Asessmen Portofolio*</td>
-                            <td style="padding: 1rem;">18 - 20 Juli 2026</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #e2e8f0; background: #fafaf9;">
-                            <td style="padding: 1rem; text-align: center; border-right: 1px solid #e2e8f0;">4</td>
-                            <td style="padding: 1rem; border-right: 1px solid #e2e8f0;">Penetapan Kelulusan</td>
-                            <td style="padding: 1rem;">22 Juli 2026</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #e2e8f0;">
-                            <td style="padding: 1rem; text-align: center; border-right: 1px solid #e2e8f0;">5</td>
-                            <td style="padding: 1rem; border-right: 1px solid #e2e8f0;">Penetapan Mata Kuliah ditempuh (per calon mahasiswa)</td>
-                            <td style="padding: 1rem;">22 Juli 2026</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #e2e8f0; background: #fafaf9;">
-                            <td style="padding: 1rem; text-align: center; border-right: 1px solid #e2e8f0;">6</td>
-                            <td style="padding: 1rem; border-right: 1px solid #e2e8f0;">Pengumuman</td>
-                            <td style="padding: 1rem;">22 Juli 2026</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 1rem; text-align: center; border-right: 1px solid #e2e8f0;">7</td>
-                            <td style="padding: 1rem; border-right: 1px solid #e2e8f0;">Registrasi</td>
-                            <td style="padding: 1rem;">22 Juli 2026</td>
-                        </tr>
+                    <tbody id="jadwal-public-body">
+                        <tr><td colspan="3" style="padding: 2rem; text-align: center; color: #64748b;"><i class="fas fa-spinner fa-spin"></i> Memuat jadwal...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -971,6 +937,33 @@
         function openPdfPreview(url) {
             document.getElementById('pdf-preview-iframe').src = url;
             document.getElementById('pdf-preview-modal').style.display = 'flex';
+        }
+
+        
+        async function loadJadwalPublic() {
+            try {
+                const res = await fetch("api/get_jadwal.php");
+                const data = await res.json();
+                const tbody = document.getElementById("jadwal-public-body");
+                
+                if (data.success && data.data.length > 0) {
+                    tbody.innerHTML = data.data.map((j, index) => {
+                        const bgClass = index % 2 === 1 ? "background: #fafaf9;" : "";
+                        return `
+                        <tr style="border-bottom: 1px solid #e2e8f0; ${bgClass}">
+                            <td style="padding: 1rem; text-align: center; border-right: 1px solid #e2e8f0;">${index + 1}</td>
+                            <td style="padding: 1rem; border-right: 1px solid #e2e8f0;">${j.kegiatan}</td>
+                            <td style="padding: 1rem;">${j.tanggal}</td>
+                        </tr>
+                        `;
+                    }).join("");
+                } else {
+                    tbody.innerHTML = "<tr><td colspan='3' style='padding: 2rem; text-align: center; color: #64748b;'>Belum ada jadwal yang dipublikasikan.</td></tr>";
+                }
+            } catch (e) {
+                console.error("Gagal memuat jadwal:", e);
+                document.getElementById("jadwal-public-body").innerHTML = "<tr><td colspan='3' style='padding: 2rem; text-align: center; color: #ef4444;'>Gagal memuat jadwal.</td></tr>";
+            }
         }
 
         function closePdfPreview() {

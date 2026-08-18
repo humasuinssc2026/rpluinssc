@@ -2,36 +2,40 @@
 header('Content-Type: application/json');
 require 'db.php';
 
-$data = json_decode(file_get_contents('php://input'), true);
-require_once 'auth.php';
-$token = $_POST['user_id'] ?? $_SERVER['HTTP_AUTHORIZATION'] ?? '';
-$admin = authenticateUser($pdo, $token);
-$userId = $admin ? $admin['id'] : null;
+$headers = getallheaders();
+$token = $headers['Authorization'] ?? '';
 
-if (!$admin || $admin['role'] !== 'admin') {
-    echo json_encode(['success' => false, 'message' => 'Akses ditolak!']);
+// Verifikasi sederhana admin
+$stmt = $pdo->prepare("SELECT role FROM users WHERE id = ?");
+$stmt->execute([$token]);
+$user = $stmt->fetch();
+if (!$user || $user['role'] !== 'admin') {
+    echo json_encode(['success' => false, 'message' => 'Akses ditolak']);
     exit;
 }
 
-$peserta_id = $data['peserta_id'] ?? '';
-$tgl = $data['tgl'] ?? '';
-$lokasi = $data['lokasi'] ?? '';
+$data = json_decode(file_get_contents("php://input"), true);
+$id = $data['id'] ?? null;
+$kegiatan = $data['kegiatan'] ?? '';
+$tanggal = $data['tanggal'] ?? '';
+$urutan = $data['urutan'] ?? 0;
 
-if (empty($peserta_id)) {
-    echo json_encode(['success' => false, 'message' => 'ID Peserta tidak valid']);
+if (!$kegiatan || !$tanggal) {
+    echo json_encode(['success' => false, 'message' => 'Kegiatan dan tanggal harus diisi']);
     exit;
 }
 
 try {
-    $stmt = $pdo->prepare("UPDATE users SET jadwal_asesmen_tgl = ?, jadwal_asesmen_lokasi = ? WHERE id = ?");
-    $stmt->execute([$tgl, $lokasi, $peserta_id]);
-    
-    // Log Aktivitas
-    $logStmt = $pdo->prepare("INSERT INTO audit_logs (admin_id, action, target) VALUES (?, ?, ?)");
-    $logStmt->execute([$userId, 'Update Jadwal Asesmen', 'Peserta ID: ' . $peserta_id]);
-    
-    echo json_encode(['success' => true, 'message' => 'Jadwal berhasil disimpan']);
-} catch (PDOException $e) {
+    if ($id) {
+        $stmt = $pdo->prepare("UPDATE jadwal SET kegiatan=?, tanggal=?, urutan=? WHERE id=?");
+        $stmt->execute([$kegiatan, $tanggal, $urutan, $id]);
+        echo json_encode(['success' => true, 'message' => 'Jadwal berhasil diperbarui']);
+    } else {
+        $stmt = $pdo->prepare("INSERT INTO jadwal (kegiatan, tanggal, urutan) VALUES (?, ?, ?)");
+        $stmt->execute([$kegiatan, $tanggal, $urutan]);
+        echo json_encode(['success' => true, 'message' => 'Jadwal berhasil ditambahkan']);
+    }
+} catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => 'Gagal menyimpan jadwal']);
 }
 ?>
