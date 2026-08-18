@@ -923,6 +923,10 @@
                     sessionStorage.setItem('popupShown', 'true');
                 }, 1500); // Tampil setelah 1.5 detik
             }
+
+            // Panggil fungsi pemuatan dinamis
+            loadWebSettingsPublic();
+            loadJadwalPublic();
         });
 
         function toggleAccess(mode, btn) {
