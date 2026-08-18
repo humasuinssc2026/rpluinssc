@@ -542,6 +542,8 @@ async function loadSettings() {
             if(document.getElementById('set-email')) document.getElementById('set-email').value = data.data.kontak_email || '';
             if(document.getElementById('set-telepon')) document.getElementById('set-telepon').value = data.data.kontak_telepon || '';
             if(document.getElementById('set-teks-berjalan')) document.getElementById('set-teks-berjalan').value = data.data.teks_berjalan || '';
+            if(document.getElementById('set-stat-mahasiswa')) document.getElementById('set-stat-mahasiswa').value = data.data.stat_mahasiswa || '';
+            if(document.getElementById('set-stat-lulusan')) document.getElementById('set-stat-lulusan').value = data.data.stat_lulusan || '';
         }
     } catch (e) {
         console.error("Gagal load settings", e);
@@ -575,12 +577,14 @@ async function saveWebSettings(e) {
     const kontak_email = document.getElementById("set-email").value;
     const kontak_telepon = document.getElementById("set-telepon").value;
     const teks_berjalan = document.getElementById("set-teks-berjalan").value;
+    const stat_mahasiswa = document.getElementById("set-stat-mahasiswa").value;
+    const stat_lulusan = document.getElementById("set-stat-lulusan").value;
     
     try {
         const res = await fetch("api/settings.php", {
             method: "POST",
             headers: { "Content-Type": "application/json", "Authorization": localStorage.getItem("user_id") },
-            body: JSON.stringify({ kontak_wa, kontak_email, kontak_telepon, teks_berjalan })
+            body: JSON.stringify({ kontak_wa, kontak_email, kontak_telepon, teks_berjalan, stat_mahasiswa, stat_lulusan })
         });
         const data = await res.json();
         alert(data.message);

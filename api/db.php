@@ -111,6 +111,8 @@ try {
     $pdo->exec("INSERT OR IGNORE INTO settings (setting_key, setting_value) VALUES ('kontak_email', 'admisi.uinssc')");
     $pdo->exec("INSERT OR IGNORE INTO settings (setting_key, setting_value) VALUES ('kontak_telepon', '082231820660')");
     $pdo->exec("INSERT OR IGNORE INTO settings (setting_key, setting_value) VALUES ('teks_berjalan', 'Pendaftaran RPL Program Sarjana (S-1) Gelombang 1 Dibuka — Batas akhir pembayaran: 30 Juli 2026 23:59:00 WIB')");
+    $pdo->exec("INSERT OR IGNORE INTO settings (setting_key, setting_value) VALUES ('stat_mahasiswa', '1250')");
+    $pdo->exec("INSERT OR IGNORE INTO settings (setting_key, setting_value) VALUES ('stat_lulusan', '450')");
 
     // Otomatis buat 1 akun admin default jika belum ada
     $stmt = $pdo->query("SELECT COUNT(*) FROM users WHERE role = 'admin'");
