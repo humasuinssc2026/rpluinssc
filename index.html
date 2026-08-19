@@ -351,133 +351,205 @@
             <p class="page-subtitle">Estimasi biaya yang perlu disiapkan calon mahasiswa RPL</p>
             <div class="title-underline"></div>
 
-            <!-- Card 1: Pendaftaran & IPI -->
-            <div style="border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 2rem; padding: 1.5rem; background: #fafaf9;">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
-                    <div>
-                        <div style="font-weight: 700; font-size: 1.05rem; color: #1e293b; text-transform: uppercase;">A & B. BIAYA PENDAFTARAN & IPI</div>
-                        <div style="font-size: 0.85rem; color: #64748b; margin-top: 0.5rem;">Komponen biaya awal masuk</div>
+            <style>
+                .biaya-item {
+                    border: 1px solid #e2e8f0;
+                    border-radius: 6px;
+                    margin-bottom: 0.8rem;
+                    background: #fff;
+                    overflow: hidden;
+                }
+                .biaya-header {
+                    padding: 1.2rem 1.5rem;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    background: #276b4a; /* Hijau tua */
+                    color: white;
+                    border: none;
+                    width: 100%;
+                    cursor: pointer;
+                    transition: background-color 0.3s ease;
+                }
+                .biaya-header:hover {
+                    background: #1e5439; /* Darker green on hover */
+                }
+                .biaya-header i.fas {
+                    transition: all 0.3s ease;
+                    font-size: 1.5rem !important;
+                    font-weight: 900;
+                    color: #F9F6EE !important; /* Putih tulang */
+                }
+                .accordion-item.active .biaya-header i.fa-plus::before {
+                    content: "\f068"; /* fa-minus */
+                }
+                .accordion-item.active .biaya-header i.fa-plus {
+                    transform: none !important;
+                }
+                .biaya-body-content {
+                    padding: 1.5rem;
+                }
+                .biaya-title {
+                    font-weight: 700; 
+                    font-size: 1.05rem; 
+                    text-transform: uppercase;
+                }
+                .biaya-subtitle {
+                    font-size: 0.9rem; 
+                    opacity: 1; 
+                    font-weight: 600; 
+                    margin-top: 0.2rem;
+                    color: #F9F6EE !important; /* Putih tulang */
+                }
+            </style>
+            
+            <div class="accordion">
+                <!-- Card 1: Pendaftaran & IPI -->
+                <div class="accordion-item biaya-item">
+                    <button class="accordion-header biaya-header">
+                        <div style="text-align: left;">
+                            <div class="biaya-title">A & B. BIAYA PENDAFTARAN & IPI</div>
+                            <div class="biaya-subtitle">Komponen biaya awal masuk</div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div style="background: rgba(255,255,255,0.2); color: white; padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700;">SEKALI BAYAR</div>
+                            <i class="fas fa-plus" style="font-size: 1.2rem;"></i>
+                        </div>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="biaya-body-content">
+                            <div style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
+                                <table style="width: 100%; border-collapse: collapse; background: white; margin: 0;">
+                                    <thead>
+                                        <tr style="background: #276b4a; color: white;">
+                                            <th style="padding: 1rem 1.2rem; text-align: left; font-weight: 600; border: none;">Layanan</th>
+                                            <th style="padding: 1rem 1.2rem; text-align: center; font-weight: 600; border: none; width: 200px;">Satuan</th>
+                                            <th style="padding: 1rem 1.2rem; text-align: right; font-weight: 600; width: 150px; border: none;">Tarif (Rp)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                                            <td style="padding: 1rem 1.2rem; color: #1e293b; font-weight: 600; border: none; font-size: 0.95rem;">Biaya Pendaftaran (S1)</td>
+                                            <td style="padding: 1rem 1.2rem; text-align: center; color: #64748b; border: none; font-size: 0.95rem;">Per Calon Mahasiswa</td>
+                                            <td style="padding: 1rem 1.2rem; text-align: right; font-weight: 700; color: #1e293b; border: none; font-size: 0.95rem;">300.000</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 1rem 1.2rem; color: #1e293b; font-weight: 600; border: none; font-size: 0.95rem;">Iuran Pengembangan Institusi (IPI) (S1)</td>
+                                            <td style="padding: 1rem 1.2rem; text-align: center; color: #64748b; border: none; font-size: 0.95rem;">Per Mahasiswa</td>
+                                            <td style="padding: 1rem 1.2rem; text-align: right; font-weight: 700; color: #1e293b; border: none; font-size: 0.95rem;">8.000.000</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
-                    <div style="background: #dcfce7; color: #166534; padding: 0.4rem 0.8rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; border: 1px solid #bbf7d0;">SEKALI BAYAR</div>
                 </div>
-                
-                <div style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
-                    <table style="width: 100%; border-collapse: collapse; background: white; margin: 0;">
-                        <thead>
-                            <tr style="background: #276b4a; color: white;">
-                                <th style="padding: 1rem 1.2rem; text-align: left; font-weight: 600; border: none;">Layanan</th>
-                                <th style="padding: 1rem 1.2rem; text-align: center; font-weight: 600; border: none; width: 200px;">Satuan</th>
-                                <th style="padding: 1rem 1.2rem; text-align: right; font-weight: 600; width: 150px; border: none;">Tarif (Rp)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr style="border-bottom: 1px solid #e2e8f0;">
-                                <td style="padding: 1rem 1.2rem; color: #1e293b; font-weight: 600; border: none; font-size: 0.95rem;">Biaya Pendaftaran (S1)</td>
-                                <td style="padding: 1rem 1.2rem; text-align: center; color: #64748b; border: none; font-size: 0.95rem;">Per Calon Mahasiswa</td>
-                                <td style="padding: 1rem 1.2rem; text-align: right; font-weight: 700; color: #1e293b; border: none; font-size: 0.95rem;">300.000</td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 1rem 1.2rem; color: #1e293b; font-weight: 600; border: none; font-size: 0.95rem;">Iuran Pengembangan Institusi (IPI) (S1)</td>
-                                <td style="padding: 1rem 1.2rem; text-align: center; color: #64748b; border: none; font-size: 0.95rem;">Per Mahasiswa</td>
-                                <td style="padding: 1rem 1.2rem; text-align: right; font-weight: 700; color: #1e293b; border: none; font-size: 0.95rem;">8.000.000</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
 
-            <!-- Card 2: Transfer / Perolehan SKS -->
-            <div style="border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 2rem; padding: 1.5rem; background: #fafaf9;">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
-                    <div>
-                        <div style="font-weight: 700; font-size: 1.05rem; color: #1e293b; text-transform: uppercase;">C. BIAYA TRANSFER / PEROLEHAN SKS</div>
-                        <div style="font-size: 0.85rem; color: #64748b; margin-top: 0.5rem;">Dikenakan sesuai dengan jumlah SKS yang diakui/diperoleh</div>
+                <!-- Card 2: Transfer / Perolehan SKS -->
+                <div class="accordion-item biaya-item">
+                    <button class="accordion-header biaya-header">
+                        <div style="text-align: left;">
+                            <div class="biaya-title">C. BIAYA TRANSFER / PEROLEHAN SKS</div>
+                            <div class="biaya-subtitle">Dikenakan sesuai dengan jumlah SKS yang diakui/diperoleh</div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div style="background: rgba(255,255,255,0.2); color: white; padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700;">PER SKS</div>
+                            <i class="fas fa-plus" style="font-size: 1.2rem;"></i>
+                        </div>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="biaya-body-content">
+                            <div style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
+                                <table style="width: 100%; border-collapse: collapse; background: white; margin: 0;">
+                                    <thead>
+                                        <tr style="background: #276b4a; color: white;">
+                                            <th style="padding: 1rem 1.2rem; text-align: left; font-weight: 600; border: none;">Layanan</th>
+                                            <th style="padding: 1rem 1.2rem; text-align: center; font-weight: 600; border: none; width: 200px;">Satuan</th>
+                                            <th style="padding: 1rem 1.2rem; text-align: right; font-weight: 600; width: 150px; border: none;">Tarif (Rp)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                                            <td style="padding: 1rem 1.2rem; color: #1e293b; font-weight: 600; border: none; font-size: 0.95rem;">1. Transfer SKS Program S1 dari D1, D2, D3 & D4</td>
+                                            <td style="padding: 1rem 1.2rem; text-align: center; color: #64748b; border: none; font-size: 0.95rem;">Per SKS</td>
+                                            <td style="padding: 1rem 1.2rem; text-align: right; font-weight: 700; color: #1e293b; border: none; font-size: 0.95rem;">25.000</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 1rem 1.2rem; color: #1e293b; font-weight: 600; border: none; font-size: 0.95rem;">2. Perolehan SKS Program S1</td>
+                                            <td style="padding: 1rem 1.2rem; text-align: center; color: #64748b; border: none; font-size: 0.95rem;">Per SKS</td>
+                                            <td style="padding: 1rem 1.2rem; text-align: right; font-weight: 700; color: #1e293b; border: none; font-size: 0.95rem;">45.000</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
-                    <div style="background: #e0f2fe; color: #0369a1; padding: 0.4rem 0.8rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; border: 1px solid #bae6fd;">PER SKS</div>
                 </div>
-                
-                <div style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
-                    <table style="width: 100%; border-collapse: collapse; background: white; margin: 0;">
-                        <thead>
-                            <tr style="background: #276b4a; color: white;">
-                                <th style="padding: 1rem 1.2rem; text-align: left; font-weight: 600; border: none;">Layanan</th>
-                                <th style="padding: 1rem 1.2rem; text-align: center; font-weight: 600; border: none; width: 200px;">Satuan</th>
-                                <th style="padding: 1rem 1.2rem; text-align: right; font-weight: 600; width: 150px; border: none;">Tarif (Rp)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr style="border-bottom: 1px solid #e2e8f0;">
-                                <td style="padding: 1rem 1.2rem; color: #1e293b; font-weight: 600; border: none; font-size: 0.95rem;">1. Transfer SKS Program S1 dari D1, D2, D3 & D4</td>
-                                <td style="padding: 1rem 1.2rem; text-align: center; color: #64748b; border: none; font-size: 0.95rem;">Per SKS</td>
-                                <td style="padding: 1rem 1.2rem; text-align: right; font-weight: 700; color: #1e293b; border: none; font-size: 0.95rem;">25.000</td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 1rem 1.2rem; color: #1e293b; font-weight: 600; border: none; font-size: 0.95rem;">2. Perolehan SKS Program S1</td>
-                                <td style="padding: 1rem 1.2rem; text-align: center; color: #64748b; border: none; font-size: 0.95rem;">Per SKS</td>
-                                <td style="padding: 1rem 1.2rem; text-align: right; font-weight: 700; color: #1e293b; border: none; font-size: 0.95rem;">45.000</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
 
-            <!-- Card 3: UKT -->
-            <div style="border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 2rem; padding: 1.5rem; background: #fafaf9;">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
-                    <div>
-                        <div style="font-weight: 700; font-size: 1.05rem; color: #1e293b; text-transform: uppercase;">D. UANG KULIAH TUNGGAL (UKT)</div>
-                        <div style="font-size: 0.85rem; color: #64748b; margin-top: 0.5rem; line-height: 1.4; max-width: 600px;">Biaya kuliah per semester berdasarkan Program Studi yang dipilih</div>
+                <!-- Card 3: UKT -->
+                <div class="accordion-item biaya-item">
+                    <button class="accordion-header biaya-header">
+                        <div style="text-align: left;">
+                            <div class="biaya-title">D. UANG KULIAH TUNGGAL (UKT)</div>
+                            <div class="biaya-subtitle">Biaya kuliah per semester berdasarkan Program Studi yang dipilih</div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div style="background: rgba(255,255,255,0.2); color: white; padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700;">PER SEMESTER</div>
+                            <i class="fas fa-plus" style="font-size: 1.2rem;"></i>
+                        </div>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="biaya-body-content">
+                            <div style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
+                                <table style="width: 100%; border-collapse: collapse; background: white; margin: 0;">
+                                    <thead>
+                                        <tr style="background: #276b4a; color: white;">
+                                            <th style="padding: 1rem 1.2rem; text-align: left; font-weight: 600; border: none;">Program Studi</th>
+                                            <th style="padding: 1rem 1.2rem; text-align: center; font-weight: 600; border: none; width: 250px;">Satuan</th>
+                                            <th style="padding: 1rem 1.2rem; text-align: right; font-weight: 600; width: 150px; border: none;">Tarif (Rp)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                                            <td style="padding: 1rem 1.2rem; color: #1e293b; font-weight: 600; border: none; font-size: 0.95rem;">1. Manajemen Pendidikan Islam (S1)</td>
+                                            <td style="padding: 1rem 1.2rem; text-align: center; color: #64748b; border: none; font-size: 0.95rem;">Per Mahasiswa/ Semester</td>
+                                            <td style="padding: 1rem 1.2rem; text-align: right; font-weight: 700; color: #1e293b; border: none; font-size: 0.95rem;">3.950.000</td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                                            <td style="padding: 1rem 1.2rem; color: #1e293b; font-weight: 600; border: none; font-size: 0.95rem;">2. Pendidikan Islam Anak Usia Dini (PIAUD) (S1)</td>
+                                            <td style="padding: 1rem 1.2rem; text-align: center; color: #64748b; border: none; font-size: 0.95rem;">Per Mahasiswa/ Semester</td>
+                                            <td style="padding: 1rem 1.2rem; text-align: right; font-weight: 700; color: #1e293b; border: none; font-size: 0.95rem;">3.950.000</td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                                            <td style="padding: 1rem 1.2rem; color: #1e293b; font-weight: 600; border: none; font-size: 0.95rem;">3. Tadris Ilmu Pengetahuan Sosial (IPS) (S1)</td>
+                                            <td style="padding: 1rem 1.2rem; text-align: center; color: #64748b; border: none; font-size: 0.95rem;">Per Mahasiswa/ Semester</td>
+                                            <td style="padding: 1rem 1.2rem; text-align: right; font-weight: 700; color: #1e293b; border: none; font-size: 0.95rem;">3.940.000</td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                                            <td style="padding: 1rem 1.2rem; color: #1e293b; font-weight: 600; border: none; font-size: 0.95rem;">4. Hukum Ekonomi Syariah (Muamalah) (S1)</td>
+                                            <td style="padding: 1rem 1.2rem; text-align: center; color: #64748b; border: none; font-size: 0.95rem;">Per Mahasiswa/ Semester</td>
+                                            <td style="padding: 1rem 1.2rem; text-align: right; font-weight: 700; color: #1e293b; border: none; font-size: 0.95rem;">3.940.000</td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                                            <td style="padding: 1rem 1.2rem; color: #1e293b; font-weight: 600; border: none; font-size: 0.95rem;">5. Akuntansi Syariah (S1)</td>
+                                            <td style="padding: 1rem 1.2rem; text-align: center; color: #64748b; border: none; font-size: 0.95rem;">Per Mahasiswa/ Semester</td>
+                                            <td style="padding: 1rem 1.2rem; text-align: right; font-weight: 700; color: #1e293b; border: none; font-size: 0.95rem;">4.180.000</td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                                            <td style="padding: 1rem 1.2rem; color: #1e293b; font-weight: 600; border: none; font-size: 0.95rem;">6. Sejarah Peradaban Islam (S1)</td>
+                                            <td style="padding: 1rem 1.2rem; text-align: center; color: #64748b; border: none; font-size: 0.95rem;">Per Mahasiswa/ Semester</td>
+                                            <td style="padding: 1rem 1.2rem; text-align: right; font-weight: 700; color: #1e293b; border: none; font-size: 0.95rem;">3.390.000</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 1rem 1.2rem; color: #1e293b; font-weight: 600; border: none; font-size: 0.95rem;">7. Bimbingan dan Konseling Islam (S1)</td>
+                                            <td style="padding: 1rem 1.2rem; text-align: center; color: #64748b; border: none; font-size: 0.95rem;">Per Mahasiswa/ Semester</td>
+                                            <td style="padding: 1rem 1.2rem; text-align: right; font-weight: 700; color: #1e293b; border: none; font-size: 0.95rem;">3.950.000</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
-                    <div style="background: #fef3c7; color: #92400e; padding: 0.4rem 0.8rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; border: 1px solid #fde68a;">PER SEMESTER</div>
-                </div>
-                
-                <div style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
-                    <table style="width: 100%; border-collapse: collapse; background: white; margin: 0;">
-                        <thead>
-                            <tr style="background: #276b4a; color: white;">
-                                <th style="padding: 1rem 1.2rem; text-align: left; font-weight: 600; border: none;">Program Studi</th>
-                                <th style="padding: 1rem 1.2rem; text-align: center; font-weight: 600; border: none; width: 250px;">Satuan</th>
-                                <th style="padding: 1rem 1.2rem; text-align: right; font-weight: 600; width: 150px; border: none;">Tarif (Rp)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr style="border-bottom: 1px solid #e2e8f0;">
-                                <td style="padding: 1rem 1.2rem; color: #1e293b; font-weight: 600; border: none; font-size: 0.95rem;">1. Manajemen Pendidikan Islam (S1)</td>
-                                <td style="padding: 1rem 1.2rem; text-align: center; color: #64748b; border: none; font-size: 0.95rem;">Per Mahasiswa/ Semester</td>
-                                <td style="padding: 1rem 1.2rem; text-align: right; font-weight: 700; color: #1e293b; border: none; font-size: 0.95rem;">3.950.000</td>
-                            </tr>
-                            <tr style="border-bottom: 1px solid #e2e8f0;">
-                                <td style="padding: 1rem 1.2rem; color: #1e293b; font-weight: 600; border: none; font-size: 0.95rem;">2. Pendidikan Islam Anak Usia Dini (PIAUD) (S1)</td>
-                                <td style="padding: 1rem 1.2rem; text-align: center; color: #64748b; border: none; font-size: 0.95rem;">Per Mahasiswa/ Semester</td>
-                                <td style="padding: 1rem 1.2rem; text-align: right; font-weight: 700; color: #1e293b; border: none; font-size: 0.95rem;">3.950.000</td>
-                            </tr>
-                            <tr style="border-bottom: 1px solid #e2e8f0;">
-                                <td style="padding: 1rem 1.2rem; color: #1e293b; font-weight: 600; border: none; font-size: 0.95rem;">3. Tadris Ilmu Pengetahuan Sosial (IPS) (S1)</td>
-                                <td style="padding: 1rem 1.2rem; text-align: center; color: #64748b; border: none; font-size: 0.95rem;">Per Mahasiswa/ Semester</td>
-                                <td style="padding: 1rem 1.2rem; text-align: right; font-weight: 700; color: #1e293b; border: none; font-size: 0.95rem;">3.940.000</td>
-                            </tr>
-                            <tr style="border-bottom: 1px solid #e2e8f0;">
-                                <td style="padding: 1rem 1.2rem; color: #1e293b; font-weight: 600; border: none; font-size: 0.95rem;">4. Hukum Ekonomi Syariah (Muamalah) (S1)</td>
-                                <td style="padding: 1rem 1.2rem; text-align: center; color: #64748b; border: none; font-size: 0.95rem;">Per Mahasiswa/ Semester</td>
-                                <td style="padding: 1rem 1.2rem; text-align: right; font-weight: 700; color: #1e293b; border: none; font-size: 0.95rem;">3.940.000</td>
-                            </tr>
-                            <tr style="border-bottom: 1px solid #e2e8f0;">
-                                <td style="padding: 1rem 1.2rem; color: #1e293b; font-weight: 600; border: none; font-size: 0.95rem;">5. Akuntansi Syariah (S1)</td>
-                                <td style="padding: 1rem 1.2rem; text-align: center; color: #64748b; border: none; font-size: 0.95rem;">Per Mahasiswa/ Semester</td>
-                                <td style="padding: 1rem 1.2rem; text-align: right; font-weight: 700; color: #1e293b; border: none; font-size: 0.95rem;">4.180.000</td>
-                            </tr>
-                            <tr style="border-bottom: 1px solid #e2e8f0;">
-                                <td style="padding: 1rem 1.2rem; color: #1e293b; font-weight: 600; border: none; font-size: 0.95rem;">6. Sejarah Peradaban Islam (S1)</td>
-                                <td style="padding: 1rem 1.2rem; text-align: center; color: #64748b; border: none; font-size: 0.95rem;">Per Mahasiswa/ Semester</td>
-                                <td style="padding: 1rem 1.2rem; text-align: right; font-weight: 700; color: #1e293b; border: none; font-size: 0.95rem;">3.390.000</td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 1rem 1.2rem; color: #1e293b; font-weight: 600; border: none; font-size: 0.95rem;">7. Bimbingan dan Konseling Islam (S1)</td>
-                                <td style="padding: 1rem 1.2rem; text-align: center; color: #64748b; border: none; font-size: 0.95rem;">Per Mahasiswa/ Semester</td>
-                                <td style="padding: 1rem 1.2rem; text-align: right; font-weight: 700; color: #1e293b; border: none; font-size: 0.95rem;">3.950.000</td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>
